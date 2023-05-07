@@ -1292,15 +1292,20 @@ Unit = Class(oldUnit) {
         self.xp = self.xp + (amount)
         self:CheckVeteranLevel()
     end,
-    OnKilled = function(self, instigator, type, overkillRatio) StorageBuffs(self, instigator, type, overkillRatio) AutoRevive(self
-        , instigator, type, overkillRatio) XPaward(self, instigator, type, overkillRatio) oldUnit.OnKilled(self,
-        instigator, type, overkillRatio)
+    OnKilled = function(self, instigator, type, overkillRatio) StorageBuffs(self, instigator, type, overkillRatio)
+        AutoRevive(self
+            , instigator, type, overkillRatio)
+        XPaward(self, instigator, type, overkillRatio)
+        oldUnit.OnKilled(self,
+            instigator, type, overkillRatio)
     end,
-    CreateShield = function(self, shieldSpec) oldUnit.CreateShield(self, shieldSpec) Buff.BuffAffectUnit(self,
-        'VeterancyShield', self, true)
+    CreateShield = function(self, shieldSpec) oldUnit.CreateShield(self, shieldSpec)
+        Buff.BuffAffectUnit(self,
+            'VeterancyShield', self, true)
     end,
-    CreatePersonalShield = function(self, shieldSpec) oldUnit.CreatePersonalShield(self, shieldSpec) Buff.BuffAffectUnit(self
-        , 'VeterancyShield', self, true)
+    CreatePersonalShield = function(self, shieldSpec) oldUnit.CreatePersonalShield(self, shieldSpec)
+        Buff.BuffAffectUnit(self
+            , 'VeterancyShield', self, true)
     end,
     InitiateTeleportThread = function(self, teleporter, location, orientation)
         local tbp = teleporter:GetBlueprint()

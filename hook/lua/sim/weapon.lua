@@ -27,22 +27,21 @@ Weapon = Class(oldWeapon) {
             if self.unit.TrackTarget then
                 proj:TrackTarget(true)
             end
-            if bp.NukeOuterRingDamage and bp.NukeOuterRingRadius and bp.NukeOuterRingTicks and bp.NukeOuterRingTotalTime and bp.NukeInnerRingDamage and bp.NukeInnerRingRadius and bp.NukeInnerRingTicks and bp.NukeInnerRingTotalTime then
+            if bp.NukeOuterRingDamage and bp.NukeOuterRingRadius and bp.NukeOuterRingTicks and bp.NukeOuterRingTotalTime
+                and bp.NukeInnerRingDamage and bp.NukeInnerRingRadius and bp.NukeInnerRingTicks and
+                bp.NukeInnerRingTotalTime then
                 local data = {
-                    NukeOuterRingDamage =
-                    self.NukeOuterRingDamage,
-                    NukeOuterRingRadius =
-                    self.NukeOuterRingRadius,
+                    NukeOuterRingDamage = self.NukeOuterRingDamage,
+                    NukeOuterRingRadius = self.NukeOuterRingRadius,
                     NukeOuterRingTicks = bp.NukeOuterRingTicks or 20,
                     NukeOuterRingTotalTime = bp.NukeOuterRingTotalTime or 10,
                     DamageType = bp.DamageType or 'Normal',
-                    NukeInnerRingDamage =
-                    self.NukeInnerRingDamage,
-                    NukeInnerRingRadius =
-                    self.NukeInnerRingRadius,
+                    NukeInnerRingDamage = self.NukeInnerRingDamage,
+                    NukeInnerRingRadius = self.NukeInnerRingRadius,
                     NukeInnerRingTicks = bp.NukeInnerRingTicks or 24,
                     NukeInnerRingTotalTime = bp.NukeInnerRingTotalTime or 24,
-                } proj:PassData(data)
+                }
+                proj:PassData(data)
             end
         end
         return proj

@@ -1,6 +1,7 @@
 local oldCollisionBeam = CollisionBeam
 CollisionBeam = Class(oldCollisionBeam) {
-    OnImpact = function(self, impactType, targetEntity) self:SetDamageTable() oldCollisionBeam.OnImpact(self, impactType, targetEntity)
+    OnImpact = function(self, impactType, targetEntity) self:SetDamageTable() oldCollisionBeam.OnImpact(self, impactType
+        , targetEntity)
     end,
     SetDamageTable = function(self)
         self.DamageTable = self.Weapon:GetDamageTable()
@@ -19,23 +20,27 @@ CollisionBeam = Class(oldCollisionBeam) {
             local radius = damageData.DamageRadius
             if radius and radius > 0 then
                 if not damageData.DoTTime or damageData.DoTTime <= 0 then
-                    DamageArea(instigator, self:GetPosition(1), radius, damage, damageData.DamageType or 'Normal', damageData.DamageFriendly or false)
+                    DamageArea(instigator, self:GetPosition(1), radius, damage, damageData.DamageType or 'Normal',
+                        damageData.DamageFriendly or false)
                 else
-                    ForkThread(DefaultDamage.AreaDoTThread, instigator, self:GetPosition(1), damageData.DoTPulses or 1, (damageData.DoTTime / (damageData.DoTPulses or 1)), radius, damage, damageData.DamageType, damageData.DamageFriendly)
+                    ForkThread(DefaultDamage.AreaDoTThread, instigator, self:GetPosition(1), damageData.DoTPulses or 1,
+                        (damageData.DoTTime / (damageData.DoTPulses or 1)), radius, damage, damageData.DamageType,
+                        damageData.DamageFriendly)
                 end
             else
                 if targetEntity then
                     if not damageData.DoTTime or damageData.DoTTime <= 0 then
                         Damage(instigator, self:GetPosition(), targetEntity, damage, damageData.DamageType)
                     else
-                        ForkThread(DefaultDamage.UnitDoTThread, instigator, targetEntity, damageData.DoTPulses or 1, (damageData.DoTTime / (damageData.DoTPulses or 1)), damage, damageData.DamageType, damageData.DamageFriendly)
+                        ForkThread(DefaultDamage.UnitDoTThread, instigator, targetEntity, damageData.DoTPulses or 1,
+                            (damageData.DoTTime / (damageData.DoTPulses or 1)), damage, damageData.DamageType,
+                            damageData.DamageFriendly)
                     end
                 else
-                    DamageArea(instigator, self:GetPosition(1), 0.25, damage, damageData.DamageType, damageData.DamageFriendly)
+                    DamageArea(instigator, self:GetPosition(1), 0.25, damage, damageData.DamageType,
+                        damageData.DamageFriendly)
                 end
             end
         end
     end,
 }
-
- 

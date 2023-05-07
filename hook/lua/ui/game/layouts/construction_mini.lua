@@ -43,8 +43,7 @@ function LayoutTabs(controls)
             self.disabledGroup:Enable()
             Checkbox.OnDisable(self)
         end
-        control.disabledGroup.Height:Set(25)
-        control.disabledGroup.Width:Set(40)
+        LayoutHelpers.SetDimensions(control.disabledGroup, 40, 25)
         LayoutHelpers.AtCenterIn(control.disabledGroup, control)
         control.OnEnable = function(self)
             self.disabledGroup:Disable()
@@ -90,15 +89,17 @@ function LayoutTabs(controls)
         end
     end
 
-    if table.getsize(controls.tabs) > 0 then
+    if not table.empty(controls.tabs) then
         for id, control in controls.tabs do
             SetupTab(control)
+
             if not prevControl then
                 LayoutHelpers.AtLeftTopIn(control, controls.minBG, 82, 0)
             else
                 local offset = 0
                 LayoutHelpers.RightOf(control, prevControl, offset)
             end
+
             prevControl = control
         end
         controls.midBG1:SetTexture(UIUtil.UIFile('/game/construct-panel/construct-panel_bmp_m1.dds'))
@@ -106,6 +107,10 @@ function LayoutTabs(controls)
         controls.midBG2:SetTexture(UIUtil.UIFile('/game/construct-panel/construct-panel_bmp_m2.dds'))
         controls.midBG3:SetTexture(UIUtil.UIFile('/game/construct-panel/construct-panel_bmp_m3.dds'))
         controls.minBG:SetTexture(UIUtil.UIFile('/game/construct-panel/construct-panel_bmp_l.dds'))
+        LayoutHelpers.SetDimensions(controls.minBG, controls.minBG.BitmapWidth(), controls.minBG.BitmapHeight()) -- TODO: This is an ugly hack for the problem described above
+        LayoutHelpers.SetDimensions(controls.midBG1, controls.midBG1.BitmapWidth(), controls.midBG1.BitmapHeight()) -- TODO
+        LayoutHelpers.SetDimensions(controls.midBG2, controls.midBG2.BitmapWidth(), controls.midBG2.BitmapHeight()) -- TODO
+        LayoutHelpers.SetDimensions(controls.midBG3, controls.midBG3.BitmapWidth(), controls.midBG3.BitmapHeight()) -- TODO
         LayoutHelpers.AtLeftIn(controls.minBG, controls.constructionGroup, 67)
         LayoutHelpers.AtBottomIn(controls.maxBG, controls.minBG, 1)
         LayoutHelpers.AtBottomIn(controls.minBG, controls.constructionGroup, 4)
@@ -114,6 +119,10 @@ function LayoutTabs(controls)
         controls.midBG2:SetTexture(UIUtil.UIFile('/game/construct-panel/construct-panel_s_bmp_m.dds'))
         controls.midBG3:SetTexture(UIUtil.UIFile('/game/construct-panel/construct-panel_s_bmp_m.dds'))
         controls.minBG:SetTexture(UIUtil.UIFile('/game/construct-panel/construct-panel_s_bmp_l.dds'))
+        LayoutHelpers.SetDimensions(controls.minBG, controls.minBG.BitmapWidth(), controls.minBG.BitmapHeight()) -- TODO
+        LayoutHelpers.SetDimensions(controls.midBG1, controls.midBG1.BitmapWidth(), controls.midBG1.BitmapHeight()) -- TODO
+        LayoutHelpers.SetDimensions(controls.midBG2, controls.midBG2.BitmapWidth(), controls.midBG2.BitmapHeight()) -- TODO
+        LayoutHelpers.SetDimensions(controls.midBG3, controls.midBG3.BitmapWidth(), controls.midBG3.BitmapHeight()) -- TODO
         LayoutHelpers.AtLeftIn(controls.minBG, controls.constructionGroup, 69)
         LayoutHelpers.AtBottomIn(controls.maxBG, controls.minBG, 0)
         LayoutHelpers.AtBottomIn(controls.minBG, controls.constructionGroup, 5)
