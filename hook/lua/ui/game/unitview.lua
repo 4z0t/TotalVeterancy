@@ -2,8 +2,7 @@ local OldUpdateWindow = UpdateWindow
 function UpdateWindow(info)
     OldUpdateWindow(info)
     if info.blueprintId ~= 'unknown' then
-        for index = 1, 5 do
-            local i = index
+        for i = 1, 5 do
             controls.vetIcons[i]:Hide()
         end
         controls.XPText:Hide()

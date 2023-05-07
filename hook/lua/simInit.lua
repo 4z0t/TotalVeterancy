@@ -1,7 +1,8 @@
 --TODO: BAD PRACTICE!
 local function testforbrute()
-    for m,f in __active_mods do
-        if f.uid=="184478EA-63CA-11DE-A3CE-C95E55D89593" and f.enabled==true and f.ui_only==false and  f.author=="Brute51" and f.selectable==true then
+    for m, f in __active_mods do
+        if f.uid == "184478EA-63CA-11DE-A3CE-C95E55D89593" and f.enabled == true and f.ui_only == false and
+            f.author == "Brute51" and f.selectable == true then
             return false
         end
     end
@@ -16,15 +17,14 @@ local function CheckAlliances()
     end
     for k, v in ArmyBrains do
         if v.BrainType == 'Human' then
-            i = i + 1 humans[i] = v
+            i = i + 1
+            humans[i] = v
         end
     end
     if table.getn(humans) > 0 then
         local maxhumans = table.getn(humans)
-        for
-        hum = 1, maxhumans do
-            for
-            ans = 1, maxhumans do
+        for hum = 1, maxhumans do
+            for ans = 1, maxhumans do
                 if not IsAlly(humans[hum]:GetArmyIndex(), humans[ans]:GetArmyIndex()) then
                     LOG('***MP Balance Set!')
                     return false
@@ -36,7 +36,8 @@ local function CheckAlliances()
     return true
 end
 
-local oldBeginSession = BeginSession function BeginSession()
+local oldBeginSession = BeginSession
+function BeginSession()
     local s = ScenarioInfo
     local restrictedUnits = import('/lua/ui/lobby/restrictedUnitsData.lua').restrictedUnits
     restrictedUnits['NUKE']['categories'] = nil
@@ -52,16 +53,16 @@ local oldBeginSession = BeginSession function BeginSession()
         local restrictedUnits = import('/lua/ui/lobby/restrictedUnitsData.lua').restrictedUnits
         restrictedUnits['GAMEENDERS']['categories'] = EntityCategoryGetUnitList(
             categories.SILO * categories.EXPERIMENTAL + categories.NUKE * categories.EXPERIMENTAL +
-                    categories.ECONOMIC * categories.EXPERIMENTAL +
-                    categories.ARTILLERY * categories.TECH3 +
-                    categories.ARTILLERY * categories.EXPERIMENTAL +
-                    categories.ORBITALSYSTEM + categories.EXPERIMENTAL * categories.STRATEGIC -
-                    categories.EXPERIMENTAL * categories.FACTORY * categories.MOBILE -
-                    categories.TECH3 * categories.ARTILLERY * categories.MOBILE)
+            categories.ECONOMIC * categories.EXPERIMENTAL +
+            categories.ARTILLERY * categories.TECH3 +
+            categories.ARTILLERY * categories.EXPERIMENTAL +
+            categories.ORBITALSYSTEM + categories.EXPERIMENTAL * categories.STRATEGIC -
+            categories.EXPERIMENTAL * categories.FACTORY * categories.MOBILE -
+            categories.TECH3 * categories.ARTILLERY * categories.MOBILE)
         restrictedUnits['NUKE']['categories'] = EntityCategoryGetUnitList(
             categories.SILO * categories.EXPERIMENTAL +
-                    categories.SILO * categories.TECH3 -
-                    categories.SUBCOMMANDER)
+            categories.SILO * categories.TECH3 -
+            categories.SUBCOMMANDER)
         for index, restriction in s.Options.RestrictedCategories do
             local restrictedCategories = nil
             for index, cat in restrictedUnits[restriction].categories do
