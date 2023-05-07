@@ -4,7 +4,8 @@ VeteranDefault = {
     Level3 = 250,
     Level4 = 500,
     Level5 = 1000,
-} function GetConstructEconomyModel(builder, targetData)
+}
+function GetConstructEconomyModel(builder, targetData)
     local builder_bp = builder:GetBlueprint()
     local rate = builder:GetBuildRate()
     local time = targetData.BuildTime
@@ -19,7 +20,8 @@ VeteranDefault = {
     if not targetData.Slot then
         if GameState() == 'game' and (builder.vetToggle or UnitData[builder:GetEntityId()].vetToggle) then
             if UnitData[builder:GetEntityId()].LevelProgress and UnitData[builder:GetEntityId()].LevelProgress > 5 then
-                energy_mod = UnitData[builder:GetEntityId()].vetToggle * (UnitData[builder:GetEntityId()].LevelProgress - 1)
+                energy_mod = UnitData[builder:GetEntityId()].vetToggle *
+                    (UnitData[builder:GetEntityId()].LevelProgress - 1)
             end
         else
             if targetData.vetBuild then
@@ -35,7 +37,8 @@ VeteranDefault = {
     if not targetData.Slot then
         if GameState() == 'game' and (builder.vetToggle or UnitData[builder:GetEntityId()].vetToggle) then
             if UnitData[builder:GetEntityId()].LevelProgress and UnitData[builder:GetEntityId()].LevelProgress > 5 then
-                mass_mod = UnitData[builder:GetEntityId()].vetToggle * (UnitData[builder:GetEntityId()].LevelProgress - 1)
+                mass_mod = UnitData[builder:GetEntityId()].vetToggle *
+                    (UnitData[builder:GetEntityId()].LevelProgress - 1)
             end
         else
             if targetData.vetBuild then
