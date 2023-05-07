@@ -4,7 +4,8 @@ local Grid = import('/lua/maui/grid.lua').Grid
 local Button = import('/lua/maui/button.lua').Button
 local Bitmap = import('/lua/maui/bitmap.lua').Bitmap
 local Checkbox = import('/lua/maui/checkbox.lua').Checkbox
-local Tooltip = import('/lua/ui/game/tooltip.lua') function LayoutTabs(controls)
+local Tooltip = import('/lua/ui/game/tooltip.lua')
+function LayoutTabs(controls)
     local prevControl = false
     local tabFiles = {
         construction = '/game/construct-tab_btn/top_tab_btn_',
@@ -20,20 +21,28 @@ local Tooltip = import('/lua/ui/game/tooltip.lua') function LayoutTabs(controls)
         LCH = '/game/construct-tech_btn/left_upgrade_btn_',
         RCH = '/game/construct-tech_btn/r_upgrade_btn_',
         Back = '/game/construct-tech_btn/m_upgrade_btn_',
-    } local function GetTabTextures(id)
-    if tabFiles[id] then
-        local pre = tabFiles[id]
-        return UIUtil.UIFile(pre .. 'up_bmp.dds'), UIUtil.UIFile(pre .. 'sel_bmp.dds'), UIUtil.UIFile(pre .. 'over_bmp.dds'), UIUtil.UIFile(pre .. 'down_bmp.dds'), UIUtil.UIFile(pre .. 'dis_bmp.dds'), UIUtil.UIFile(pre .. 'dis_bmp.dds')
-    else
-        if techFiles[id] then
+    }
+    local function GetTabTextures(id)
+        if tabFiles[id] then
+            local pre = tabFiles[id]
+            return UIUtil.UIFile(pre .. 'up_bmp.dds'), UIUtil.UIFile(pre .. 'sel_bmp.dds'),
+                UIUtil.UIFile(pre .. 'over_bmp.dds'), UIUtil.UIFile(pre .. 'down_bmp.dds'),
+                UIUtil.UIFile(pre .. 'dis_bmp.dds'), UIUtil.UIFile(pre .. 'dis_bmp.dds')
+        elseif techFiles[id] then
             local pre = techFiles[id]
-            return UIUtil.UIFile(pre .. 'up.dds'), UIUtil.UIFile(pre .. 'selected.dds'), UIUtil.UIFile(pre .. 'over.dds'), UIUtil.UIFile(pre .. 'down.dds'), UIUtil.UIFile(pre .. 'dis.dds'), UIUtil.UIFile(pre .. 'dis.dds')
+            return UIUtil.UIFile(pre .. 'up.dds'), UIUtil.UIFile(pre .. 'selected.dds'),
+                UIUtil.UIFile(pre .. 'over.dds'), UIUtil.UIFile(pre .. 'down.dds'), UIUtil.UIFile(pre .. 'dis.dds'),
+                UIUtil.UIFile(pre .. 'dis.dds')
         end
     end
-    local function SetupTab(control) control:SetNewTextures(GetTabTextures(control.ID)) control:UseAlphaHitTest(false)
+
+    local function SetupTab(control) control:SetNewTextures(GetTabTextures(control.ID))
+        control:UseAlphaHitTest(false)
         control.OnDisable = function(self) self.disabledGroup:Enable() Checkbox.OnDisable(self)
         end
-        control.disabledGroup.Height:Set(25) control.disabledGroup.Width:Set(40) LayoutHelpers.AtCenterIn(control.disabledGroup, control)
+        control.disabledGroup.Height:Set(25)
+        control.disabledGroup.Width:Set(40)
+        LayoutHelpers.AtCenterIn(control.disabledGroup, control)
         control.OnEnable = function(self) self.disabledGroup:Disable() Checkbox.OnEnable(self)
         end
     end
@@ -82,19 +91,40 @@ local Tooltip = import('/lua/ui/game/tooltip.lua') function LayoutTabs(controls)
             if not prevControl then
                 LayoutHelpers.AtLeftTopIn(control, controls.minBG, 82, 0)
             else
-                local offset = 0 LayoutHelpers.RightOf(control, prevControl, offset)
+                local offset = 0
+                LayoutHelpers.RightOf(control, prevControl, offset)
             end
             prevControl = control
         end
-        controls.midBG1:SetTexture(UIUtil.UIFile('/game/construct-panel/construct-panel_bmp_m1.dds')) controls.midBG1.Right:Set(prevControl.Right) controls.midBG2:SetTexture(UIUtil.UIFile('/game/construct-panel/construct-panel_bmp_m2.dds')) controls.midBG3:SetTexture(UIUtil.UIFile('/game/construct-panel/construct-panel_bmp_m3.dds')) controls.minBG:SetTexture(UIUtil.UIFile('/game/construct-panel/construct-panel_bmp_l.dds')) LayoutHelpers.AtLeftIn(controls.minBG, controls.constructionGroup, 67) LayoutHelpers.AtBottomIn(controls.maxBG, controls.minBG, 1) LayoutHelpers.AtBottomIn(controls.minBG, controls.constructionGroup, 4)
+        controls.midBG1:SetTexture(UIUtil.UIFile('/game/construct-panel/construct-panel_bmp_m1.dds'))
+        controls.midBG1.Right:Set(prevControl.Right)
+        controls.midBG2:SetTexture(UIUtil.UIFile('/game/construct-panel/construct-panel_bmp_m2.dds'))
+        controls.midBG3:SetTexture(UIUtil.UIFile('/game/construct-panel/construct-panel_bmp_m3.dds'))
+        controls.minBG:SetTexture(UIUtil.UIFile('/game/construct-panel/construct-panel_bmp_l.dds'))
+        LayoutHelpers.AtLeftIn(controls.minBG, controls.constructionGroup, 67)
+        LayoutHelpers.AtBottomIn(controls.maxBG, controls.minBG, 1)
+        LayoutHelpers.AtBottomIn(controls.minBG, controls.constructionGroup, 4)
     else
-        controls.midBG1:SetTexture(UIUtil.UIFile('/game/construct-panel/construct-panel_s_bmp_m.dds')) controls.midBG2:SetTexture(UIUtil.UIFile('/game/construct-panel/construct-panel_s_bmp_m.dds')) controls.midBG3:SetTexture(UIUtil.UIFile('/game/construct-panel/construct-panel_s_bmp_m.dds')) controls.minBG:SetTexture(UIUtil.UIFile('/game/construct-panel/construct-panel_s_bmp_l.dds')) LayoutHelpers.AtLeftIn(controls.minBG, controls.constructionGroup, 69) LayoutHelpers.AtBottomIn(controls.maxBG, controls.minBG, 0) LayoutHelpers.AtBottomIn(controls.minBG, controls.constructionGroup, 5)
+        controls.midBG1:SetTexture(UIUtil.UIFile('/game/construct-panel/construct-panel_s_bmp_m.dds'))
+        controls.midBG2:SetTexture(UIUtil.UIFile('/game/construct-panel/construct-panel_s_bmp_m.dds'))
+        controls.midBG3:SetTexture(UIUtil.UIFile('/game/construct-panel/construct-panel_s_bmp_m.dds'))
+        controls.minBG:SetTexture(UIUtil.UIFile('/game/construct-panel/construct-panel_s_bmp_l.dds'))
+        LayoutHelpers.AtLeftIn(controls.minBG, controls.constructionGroup, 69)
+        LayoutHelpers.AtBottomIn(controls.maxBG, controls.minBG, 0)
+        LayoutHelpers.AtBottomIn(controls.minBG, controls.constructionGroup, 5)
     end
-    SetupTab(controls.constructionTab) LayoutHelpers.AtLeftTopIn(controls.constructionTab, controls.constructionGroup, 0, 14) SetupTab(controls.selectionTab) LayoutHelpers.Below(controls.selectionTab, controls.constructionTab, -16) SetupTab(controls.enhancementTab) LayoutHelpers.Below(controls.enhancementTab, controls.selectionTab, -16)
+    SetupTab(controls.constructionTab)
+    LayoutHelpers.AtLeftTopIn(controls.constructionTab, controls.constructionGroup, 0, 14)
+    SetupTab(controls.selectionTab)
+    LayoutHelpers.Below(controls.selectionTab, controls.constructionTab, -16)
+    SetupTab(controls.enhancementTab)
+    LayoutHelpers.Below(controls.enhancementTab, controls.selectionTab, -16)
     local vetoffset = 122
     if table.getsize(controls.tabs) == 5 then
         KillSwitch()
-        controls.vetbutton2 = UIUtil.CreateButtonStd(prevControl, '/game/construct-tech_btn/t1') CheckEnabled() Tooltip.AddButtonTooltip(controls.vetbutton2, 'ToggleVet2', 0)
+        controls.vetbutton2 = UIUtil.CreateButtonStd(prevControl, '/game/construct-tech_btn/t1')
+        CheckEnabled()
+        Tooltip.AddButtonTooltip(controls.vetbutton2, 'ToggleVet2', 0)
         controls.vetbutton2.defHandleEvent = controls.vetbutton2.HandleEvent
         controls.vetbutton2.HandleEvent = function(self, event)
             if event.Type == 'MouseEnter' or event.Type == 'MouseMotion' then
@@ -103,17 +133,18 @@ local Tooltip = import('/lua/ui/game/tooltip.lua') function LayoutTabs(controls)
             return self.defHandleEvent(self, event)
         end
         controls.vetbutton2.OnClick = function(self, modifiers)
-            local tab = ExportBuilders() SimCallback({
-            Func = 'ToggleVeteranBuilding2',
-            Args = {
-                owner = GetFocusArmy(),
-                units = tab
-            }
-        }) CheckEnabled()
+            local tab = ExportBuilders()
+            SimCallback({
+                Func = 'ToggleVeteranBuilding2',
+                Args = {
+                    owner = GetFocusArmy(),
+                    units = tab
+                }
+            })
+            CheckEnabled()
         end
         LayoutHelpers.LeftOf(controls.vetbutton2, prevControl, vetoffset)
     else
         KillSwitch()
     end
-end
 end

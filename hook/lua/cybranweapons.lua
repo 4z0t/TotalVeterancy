@@ -1,7 +1,8 @@
 CIFCommanderDeathWeapon = Class(BareBonesWeapon) {
     FiringMuzzleBones = { 0 },
 
-    OnCreate = function(self) BareBonesWeapon.OnCreate(self)
+    OnCreate = function(self)
+        BareBonesWeapon.OnCreate(self)
         local myBlueprint = self:GetBlueprint()
         self.Data = {
             NukeOuterRingDamage = myBlueprint.NukeOuterRingDamage or 10,
@@ -13,7 +14,8 @@ CIFCommanderDeathWeapon = Class(BareBonesWeapon) {
             NukeInnerRingRadius = myBlueprint.NukeInnerRingRadius or 30,
             NukeInnerRingTicks = myBlueprint.NukeInnerRingTicks or 24,
             NukeInnerRingTotalTime = myBlueprint.NukeInnerRingTotalTime or 24,
-        } self:SetWeaponEnabled(false)
+        }
+        self:SetWeaponEnabled(false)
     end,
 
     OnFire = function(self)
@@ -21,7 +23,8 @@ CIFCommanderDeathWeapon = Class(BareBonesWeapon) {
 
     Fire = function(self)
         local myBlueprint = self:GetBlueprint()
-        local myProjectile = self.unit:CreateProjectile(myBlueprint.ProjectileId, 0, 0, 0, nil, nil, nil):SetCollision(false) myProjectile:PassDamageData(self:GetDamageTable())
+        local myProjectile = self.unit:CreateProjectile(myBlueprint.ProjectileId, 0, 0, 0, nil, nil, nil):SetCollision(false)
+        myProjectile:PassDamageData(self:GetDamageTable())
         if self.Data then
             myProjectile:PassData(self.Data)
         end

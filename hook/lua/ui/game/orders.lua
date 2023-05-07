@@ -65,14 +65,16 @@ local function JumpButtoncr()
             heightx = 1
         end
         if modifiers.Ctrl then
-            range = 'howlingfury' cb()
+            range = 'howlingfury'
+            cb()
             return
         end
         if modifiers.Middle then
             range = 'longrange'
         end
         if modifiers.Alt then
-            range = 'danceofdeath' cb()
+            range = 'danceofdeath'
+            cb()
             return
         end
         ConExecute('IssueCommand Stop')
@@ -102,12 +104,16 @@ local function mew(availableOrders, availableToggles, newSelection, run)
     jumpers = {}
     local r = false
     if table.getsize(newSelection) > 0 then
-        local list = ValidateUnitsList(EntityCategoryFilterDown(categories.COMMAND + categories.SUBCOMMANDER + categories.uel0106, newSelection))
+        local list = ValidateUnitsList(EntityCategoryFilterDown(categories.COMMAND + categories.SUBCOMMANDER +
+            categories.uel0106, newSelection))
         if list then
             for k, v in list do
                 local id = v:GetEntityId()
                 local bp = v:GetBlueprint().Categories
-                if UnitData.ALLies or (UnitData[id].LevelProgress > 5 and EntityCategoryContains(categories.SUBCOMMANDER, v)) or (UnitData[id].LevelProgress > 31 and EntityCategoryContains(categories.COMMAND, v)) or EntityCategoryContains(categories.uel0106, v) then
+                if UnitData.ALLies or
+                    (UnitData[id].LevelProgress > 5 and EntityCategoryContains(categories.SUBCOMMANDER, v)) or
+                    (UnitData[id].LevelProgress > 31 and EntityCategoryContains(categories.COMMAND, v)) or
+                    EntityCategoryContains(categories.uel0106, v) then
                     table.insert(jumpers, id)
                     r = true
                 end

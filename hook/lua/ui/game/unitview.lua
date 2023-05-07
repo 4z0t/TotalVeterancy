@@ -1,8 +1,10 @@
-local OldUpdateWindow = UpdateWindow function UpdateWindow(info) OldUpdateWindow(info)
+local OldUpdateWindow = UpdateWindow
+function UpdateWindow(info)
+    OldUpdateWindow(info)
     if info.blueprintId ~= 'unknown' then
-        for
-        index = 1, 5 do
-            local i = index controls.vetIcons[i]:Hide()
+        for index = 1, 5 do
+            local i = index
+            controls.vetIcons[i]:Hide()
         end
         controls.XPText:Hide()
         controls.vetXPBar:Hide()
@@ -14,7 +16,8 @@ local OldUpdateWindow = UpdateWindow function UpdateWindow(info) OldUpdateWindow
         local bp = __blueprints[info.blueprintId]
         if info.entityId == nil and info.maxHealth and bp.Defense.MaxHealth and bp.Economy.xpValue then
             if table.find(bp.Categories, 'COMMAND') or table.find(bp.Categories, 'SUBCOMMANDER') then
-                controls.vetXPText:SetText('Level ???') controls.vetXPText:Show()
+                controls.vetXPText:SetText('Level ???')
+                controls.vetXPText:Show()
             else
                 local level = info.maxHealth / bp.Defense.MaxHealth
                 local killxp = bp.Economy.xpValue
@@ -38,7 +41,8 @@ local OldUpdateWindow = UpdateWindow function UpdateWindow(info) OldUpdateWindow
             controls.shieldText:SetText(string.format('BaseXP %d', basexp))
             controls.shieldText:Show()
         end
-        if UnitData[info.entityId].vetBuild and UnitData[info.entityId].vetBuild > 0 and UnitData[info.entityId].LevelProgress then
+        if UnitData[info.entityId].vetBuild and UnitData[info.entityId].vetBuild > 0 and
+            UnitData[info.entityId].LevelProgress then
             UnitData[info.entityId].LevelProgress = UnitData[info.entityId].vetBuild * .05
         end
         if UnitData[info.entityId].LevelProgress then
@@ -48,8 +52,7 @@ local OldUpdateWindow = UpdateWindow function UpdateWindow(info) OldUpdateWindow
             local xp = 0
             if level < 1000 then
                 xp = percent * bp.Economy.XPperLevel * (1 + 0.1 * (level - 1))
-                for
-                i = 1, level do
+                for i = 1, level do
                     local Xpn = bp.Economy.XPperLevel * (1 + 0.1 * (i - 1))
                     XPnextLevel = Xpn + XPnextLevel
                 end
@@ -59,9 +62,13 @@ local OldUpdateWindow = UpdateWindow function UpdateWindow(info) OldUpdateWindow
             if worth > 1000000 then
                 worth = 0
             end
-            controls.XPText:SetText(string.format('current XP %d / next Level %d / worth %d', xp, XPnextLevel - xp, worth)) controls.XPText:Show() controls.vetXPBar:SetValue(percent) controls.vetXPText:SetText(string.format('Level %d', level))
+            controls.XPText:SetText(string.format('current XP %d / next Level %d / worth %d', xp, XPnextLevel - xp, worth))
+            controls.XPText:Show()
+            controls.vetXPBar:SetValue(percent)
+            controls.vetXPText:SetText(string.format('Level %d', level))
             if UnitData[info.entityId].Revive then
-                controls.vetRevive:SetText(string.format('%d', UnitData[info.entityId].Revive)) controls.vetRevive:SetColor('FF009900')
+                controls.vetRevive:SetText(string.format('%d', UnitData[info.entityId].Revive))
+                controls.vetRevive:SetColor('FF009900')
                 if UnitData[info.entityId].Revive < math.floor((level + 10) * 0.04) then
                     controls.vetRevive:SetColor('FFFF9900')
                 end
@@ -81,18 +88,24 @@ local OldUpdateWindow = UpdateWindow function UpdateWindow(info) OldUpdateWindow
             controls.vetXPBar:Show()
         end
         if info.health and UnitData[info.entityId].RegenRate then
-            controls.health:SetText(string.format("%d / %d +%d/s", info.health, info.maxHealth, math.floor(UnitData[info.entityId].RegenRate)))
+            controls.health:SetText(string.format("%d / %d +%d/s", info.health, info.maxHealth,
+                math.floor(UnitData[info.entityId].RegenRate)))
         end
         if info.shieldRatio > 0 and UnitData[info.entityId].ShieldMaxHp then
             controls.shieldText:Show()
             if UnitData[info.entityId].ShieldRegen then
-                controls.shieldText:SetText(string.format("%d / %d +%d/s", math.floor(UnitData[info.entityId].ShieldMaxHp * info.shieldRatio), UnitData[info.entityId].ShieldMaxHp, UnitData[info.entityId].ShieldRegen))
+                controls.shieldText:SetText(string.format("%d / %d +%d/s",
+                    math.floor(UnitData[info.entityId].ShieldMaxHp * info.shieldRatio),
+                    UnitData[info.entityId].ShieldMaxHp, UnitData[info.entityId].ShieldRegen))
             else
-                controls.shieldText:SetText(string.format("%d / %d", math.floor(UnitData[info.entityId].ShieldMaxHp * info.shieldRatio), UnitData[info.entityId].ShieldMaxHp))
+                controls.shieldText:SetText(string.format("%d / %d",
+                    math.floor(UnitData[info.entityId].ShieldMaxHp * info.shieldRatio),
+                    UnitData[info.entityId].ShieldMaxHp))
             end
         end
         if info.userUnit ~= nil and info.userUnit:GetBuildRate() >= 2 then
-            controls.Buildrate:SetText(string.format("%d", math.floor(info.userUnit:GetBuildRate()))) controls.Buildrate:Show()
+            controls.Buildrate:SetText(string.format("%d", math.floor(info.userUnit:GetBuildRate())))
+            controls.Buildrate:Show()
         end
     else
         controls.XPText:Hide()
@@ -104,7 +117,8 @@ local OldUpdateWindow = UpdateWindow function UpdateWindow(info) OldUpdateWindow
     end
 end
 
-local OldCreateUI = CreateUI function CreateUI() OldCreateUI()
+local OldCreateUI = CreateUI
+function CreateUI() OldCreateUI()
     controls.vetXPBar = StatusBar(controls.bg, 0, 1, false, false, nil, nil, true)
     controls.vetXPText = UIUtil.CreateText(controls.bg, '', 12, UIUtil.bodyFont)
     controls.vetRevive = UIUtil.CreateText(controls.bg, '', 20, UIUtil.bodyFont)
