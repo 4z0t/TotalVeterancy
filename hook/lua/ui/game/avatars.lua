@@ -7,13 +7,11 @@ function FocusArmyChanged()
         end
     end
     local g = GetFocusArmy()
-    if g == -1 or GetArmiesTable()[g].human == false then
+    if g == -1 or not GetArmiesTable()[g].human then
         GameMain.RemoveBeatFunction(AvatarUpdate)
         recievingBeatUpdate = false
-    else
-        if not recievingBeatUpdate then
-            recievingBeatUpdate = true
-            GameMain.AddBeatFunction(AvatarUpdate)
-        end
+    elseif not recievingBeatUpdate then
+        recievingBeatUpdate = true
+        GameMain.AddBeatFunction(AvatarUpdate)
     end
 end

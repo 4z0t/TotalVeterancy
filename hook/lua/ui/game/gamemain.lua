@@ -193,11 +193,11 @@ end
 local originalCreateUI = CreateUI
 function CreateUI(isReplay)
     originalCreateUI(isReplay)
-    if isReplay == false then
-        local parent = import('/lua/ui/game/borders.lua').GetMapGroup()
-        SwapButton(parent)
-        if SessionIsMultiplayer() == false then
-            ToggleButtons(parent)
-        end
+    if isReplay then return end
+
+    local parent = import('/lua/ui/game/borders.lua').GetMapGroup()
+    SwapButton(parent)
+    if not SessionIsMultiplayer() then
+        ToggleButtons(parent)
     end
 end
