@@ -17,9 +17,12 @@ function UIUtil.SetNewButtonStdTextures(btn, filename)
 end
 
 function SwapButton(parent)
-    local meButton = Button(parent, UIUtil.UIFile('/game/mfd_btn/economy_btn_up.dds'),
-        UIUtil.UIFile('/game/mfd_btn/economy_btn_down.dds'), UIUtil.UIFile('/game/mfd_btn/economy_btn_over.dds'),
-        UIUtil.UIFile('/game/mfd_btn/economy_btn_dis.dds'))
+    local meButton = Button(parent,
+        UIUtil.UIFile('/game/mfd_btn/economy_btn_up.dds'),
+        UIUtil.UIFile('/game/mfd_btn/economy_btn_down.dds'),
+        UIUtil.UIFile('/game/mfd_btn/economy_btn_over.dds'),
+        UIUtil.UIFile('/game/mfd_btn/economy_btn_dis.dds')
+    )
     meButton.Left:Set(function()
         return parent.Left() + 0
     end)
@@ -48,65 +51,65 @@ function ToggleButtons(parent)
     local BuffAIs = UIUtil.CreateButtonStd(group, '/game/mfd_btn/military')
     Tooltip.AddButtonTooltip(BuffAIs, 'BuffAIs', 0.4)
     LayoutHelpers.AtLeftTopIn(BuffAIs, group, 40, 60)
-    BuffAIs.OnClick = function() SimCallback({
+    BuffAIs.OnClick = function() SimCallback {
             Func = 'BuffAIs',
             Args = {
                 owner = GetFocusArmy()
             }
-        })
+        }
     end
     local BuffButtonDef = UIUtil.CreateButtonStd(group, '/game/mfd_btn/defenses')
     LayoutHelpers.AtLeftTopIn(BuffButtonDef, group, 70, 60)
-    BuffButtonDef.OnClick = function() SimCallback({
+    BuffButtonDef.OnClick = function() SimCallback {
             Func = 'BuffButtonDef',
             Args = {
                 owner = GetFocusArmy()
             }
-        })
+        }
     end
     Tooltip.AddButtonTooltip(BuffButtonDef, 'BuffButtonDef', 1.2)
     local bButtonBase = UIUtil.CreateButtonStd(group, '/game/mfd_btn/control')
     LayoutHelpers.AtLeftTopIn(bButtonBase, group, 100, 60)
     bButtonBase.OnClick = function()
-        SimCallback({
+        SimCallback {
             Func = 'bBBase',
             Args = {
                 owner = GetFocusArmy()
             }
-        })
+        }
     end
     Tooltip.AddButtonTooltip(bButtonBase, 'bBBase', 1.2)
     local bButtonS = UIUtil.CreateButtonStd(group, '/game/mfd_btn/ping-move')
     LayoutHelpers.AtLeftTopIn(bButtonS, group, 130, 60)
     bButtonS.OnClick = function()
-        SimCallback({
+        SimCallback {
             Func = 'BuffAIsSea',
             Args = {
                 owner = GetFocusArmy()
             }
-        })
+        }
     end
     Tooltip.AddButtonTooltip(bButtonS, 'BuffAIsSea', 0.4)
     local bButtonA = UIUtil.CreateButtonStd(group, '/game/mfd_btn/ping-attack')
     LayoutHelpers.AtLeftTopIn(bButtonA, group, 160, 60)
-    bButtonA.OnClick = function() SimCallback({
+    bButtonA.OnClick = function() SimCallback {
             Func = 'BuffAIsAir',
             Args = {
                 owner = GetFocusArmy()
             }
-        })
+        }
     end
     Tooltip.AddButtonTooltip(bButtonA, 'BuffAIsAir', 0.4)
     local AIVetBuild = 4
     local AIVButton = UIUtil.CreateButtonStd(group, '/game/mfd_btn/military-radar')
     LayoutHelpers.AtLeftTopIn(AIVButton, group, 190, 60)
-    AIVButton.OnClick = function() SimCallback({
+    AIVButton.OnClick = function() SimCallback {
             Func = 'AIVetBuildEnabled',
             Args = {
                 owner = GetFocusArmy(),
                 enabled = AIVetBuild
             }
-        })
+        }
         if AIVetBuild > 0 then
             AIVetBuild = 0
         else
@@ -168,12 +171,14 @@ function ToggleButtons(parent)
     end
     Tooltip.AddButtonTooltip(TBButton, 'ToggleBalance', 0.4)
     local Checkbox = import('/lua/maui/checkbox.lua').Checkbox
-    expandCheck = Checkbox(parent, UIUtil.SkinnableFile('/game/tab-l-btn/tab-open_btn_up.dds'),
+    expandCheck = Checkbox(parent,
+        UIUtil.SkinnableFile('/game/tab-l-btn/tab-open_btn_up.dds'),
         UIUtil.SkinnableFile('/game/tab-l-btn/tab-close_btn_up.dds'),
         UIUtil.SkinnableFile('/game/tab-l-btn/tab-open_btn_over.dds'),
         UIUtil.SkinnableFile('/game/tab-l-btn/tab-close_btn_over.dds'),
         UIUtil.SkinnableFile('/game/tab-l-btn/tab-open_btn_dis.dds'),
-        UIUtil.SkinnableFile('/game/tab-l-btn/tab-close_btn_dis.dds'))
+        UIUtil.SkinnableFile('/game/tab-l-btn/tab-close_btn_dis.dds')
+    )
     LayoutHelpers.AtLeftTopIn(expandCheck, group, 33, 61)
     expandCheck.OnCheck = function(self, checked)
         if checked then
