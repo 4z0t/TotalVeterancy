@@ -1,0 +1,19 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "FAF dev",
+      "command": "C:\\ProgramData\\FAForever\\bin\\ForgedAlliance.exe",
+      "args": [
+        "/init",
+        "init-dev.lua",
+        "/nobugreport",
+        "/log",
+        ".\\logs\\game.log",
+        "/EnableDiskWatch",
+        "/showlog",
+      ],
+      "type": "shell"
+    }
+  ]
+}
