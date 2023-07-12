@@ -1,38 +1,37 @@
-
 UnitBlueprint {
-	BlueprintId="uel0401",Merge=true,
-Weapon = {
-{
-DamageFriendly = false,
-MuzzleVelocity = 40,
-TurretPitchRange = 90,
-},
-{
-DamageFriendly = false,
-MuzzleVelocity = 40,
-TurretPitchRange = 90,
-},
-{
-DamageFriendly = false,
-MuzzleVelocity = 40,
-TurretPitchRange = 90,
-},
-{
-DamageFriendly = false,
-MuzzleVelocity = 40,
-TurretPitchRange = 90,
-},
-{
-},
-{
-},
-{
-},
-{
-},
-{
-},
-{
-},
-},
+	BlueprintId = "uel0401", Merge = true,
+	Weapon = {
+		{
+			DamageFriendly = false,
+			MuzzleVelocity = 40,
+			TurretPitchRange = 90,
+		},
+		{
+			DamageFriendly = false,
+			MuzzleVelocity = 40,
+			TurretPitchRange = 90,
+		},
+		{
+			DamageFriendly = false,
+			MuzzleVelocity = 40,
+			TurretPitchRange = 90,
+		},
+		{
+			DamageFriendly = false,
+			MuzzleVelocity = 40,
+			TurretPitchRange = 90,
+		},
+		{
+		},
+		{
+		},
+		{
+		},
+		{
+		},
+		{
+		},
+		{
+		},
+	},
 }
