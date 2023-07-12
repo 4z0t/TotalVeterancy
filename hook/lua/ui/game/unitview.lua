@@ -8,7 +8,6 @@ function UpdateWindow(info)
         controls.XPText:Hide()
         controls.vetXPBar:Hide()
         controls.vetXPText:Hide()
-        controls.Buildrate:Hide()
         controls.shieldText:Hide()
         controls.vetRevive:Hide()
         controls.vetToggleDisplay:Hide()
@@ -102,15 +101,10 @@ function UpdateWindow(info)
                     UnitData[info.entityId].ShieldMaxHp))
             end
         end
-        if info.userUnit ~= nil and info.userUnit:GetBuildRate() >= 2 then
-            controls.Buildrate:SetText(string.format("%d", math.floor(info.userUnit:GetBuildRate())))
-            controls.Buildrate:Show()
-        end
     else
         controls.XPText:Hide()
         controls.vetXPBar:Hide()
         controls.vetXPText:Hide()
-        controls.Buildrate:Hide()
         controls.vetRevive:Hide()
         controls.vetToggleDisplay:Hide()
     end
@@ -123,12 +117,10 @@ function CreateUI() OldCreateUI()
     controls.vetRevive = UIUtil.CreateText(controls.bg, '', 20, UIUtil.bodyFont)
     controls.vetToggleDisplay = UIUtil.CreateText(controls.bg, '', 18, UIUtil.bodyFont)
     controls.shieldText = UIUtil.CreateText(controls.bg, '', 13, UIUtil.bodyFont)
-    controls.Buildrate = UIUtil.CreateText(controls.bg, '', 12, UIUtil.bodyFont)
     controls.XPText = UIUtil.CreateText(controls.bg, '', 12, UIUtil.bodyFont)
     local Tooltip = import('/lua/ui/game/tooltip.lua')
     Tooltip.AddControlTooltip(controls.vetRevive, 'AutoRevive', 0)
     Tooltip.AddControlTooltip(controls.vetToggleDisplay, 'ToggleVetIsOn', 0)
-    Tooltip.AddControlTooltip(controls.Buildrate, 'Buildrate', 0)
     Tooltip.AddControlTooltip(controls.XPText, 'XpNumericals', 0)
     Tooltip.AddControlTooltip(controls.vetXPText, 'Level', 0)
 end

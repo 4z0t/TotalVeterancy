@@ -27,7 +27,6 @@ do
         LayoutHelpers.RightOf(controls.statGroups[1].value, controls.statGroups[1].icon, 5)
         LayoutHelpers.Below(controls.statGroups[2].icon, controls.statGroups[1].icon, 0)
         LayoutHelpers.RightOf(controls.statGroups[2].value, controls.statGroups[2].icon, 5)
-        LayoutHelpers.Below(controls.Buildrate, controls.statGroups[2].value, 1)
         LayoutHelpers.CenteredAbove(controls.XPText, controls.bg, 0)
     end
 end
