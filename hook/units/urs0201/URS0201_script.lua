@@ -7,7 +7,7 @@ URS0201 = Class(oldURS0201) {
         end
         local bp = self:GetBlueprint()
         local scale = bp.Display.UniformScale or 1
-        if (land) then
+        if land then
             if not Buffs['CybranDestroyerLandSpeed'] then
                 BuffBlueprint {
                     Name = 'CybranDestroyerLandSpeed',

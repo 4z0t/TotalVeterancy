@@ -1,18 +1,17 @@
 local oldXRB3301 = XRB3301
 XRB3301 = Class(oldXRB3301) {
     OnCreate = function(self) oldXRB3301.OnCreate(self)
-        self.MaxVisionRadius = self:GetBlueprint().Intel.MaxVisionRadius
-        self.MinVisionRadius = self:GetBlueprint().Intel.MinVisionRadius
+        self.MaxVisionRadius = self.Blueprint.Intel.MaxVisionRadius
+        self.MinVisionRadius = self.Blueprint.Intel.MinVisionRadius
     end,
-    OnIntelEnabled = function(self) oldXRB3301.OnIntelEnabled(self)
-    end,
-    OnIntelDisabled = function(self) oldXRB3301.OnIntelDisabled(self)
-    end,
+
     ExpandingVision = State {
-        Main = function(self) WaitSeconds(0.1)
+        Main = function(self)
+            WaitTicks(1)
             while true do
                 if self:GetResourceConsumed() ~= 1 then
-                    self.ExpandingVisionEnergyCheck = true self:OnIntelDisabled()
+                    self.ExpandingVisionEnergyCheck = true
+                    self:OnIntelDisabled()
                 end
                 local curRadius = self:GetIntelRadius('vision')
                 local targetRadius = self.MaxVisionRadius
@@ -24,7 +23,7 @@ XRB3301 = Class(oldXRB3301) {
                         self:SetIntelRadius('vision', curRadius)
                     end
                 end
-                WaitSeconds(0.2)
+                WaitTicks(1)
             end
         end,
     },
@@ -49,7 +48,7 @@ XRB3301 = Class(oldXRB3301) {
                         self:SetIntelRadius('vision', curRadius)
                     end
                 end
-                WaitSeconds(0.2)
+                WaitTicks(1)
             end
         end,
     },
