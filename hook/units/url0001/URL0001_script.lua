@@ -1,8 +1,8 @@
 local oldURL0001 = URL0001
 URL0001 = Class(oldURL0001) {
     CreateEnhancement = function(self, enh)
-        CWalkingLandUnit.CreateEnhancement(self, enh)
-        local bp = self:GetBlueprint().Enhancements[enh]
+        ACUUnit.CreateEnhancement(self, enh)
+        local bp = self.Blueprint.Enhancements[enh]
         if not bp then
             return
         end
@@ -61,10 +61,6 @@ URL0001 = Class(oldURL0001) {
                 Buff.RemoveBuff(self, 'CybranACUCloakBonus')
             end
         elseif enh == 'AdvancedEngineering' then
-            local bp = self:GetBlueprint().Enhancements[enh]
-            if not bp then
-                return
-            end
             local cat = ParseEntityCategory(bp.BuildableCategoryAdds)
             self:RemoveBuildRestriction(cat)
             if not Buffs['CybranACUT2BuildRate'] then
@@ -89,10 +85,6 @@ URL0001 = Class(oldURL0001) {
             end
             Buff.ApplyBuff(self, 'CybranACUT2BuildRate')
         elseif enh == 'AdvancedEngineeringRemove' then
-            local bp = self:GetBlueprint().Economy.BuildRate
-            if not bp then
-                return
-            end
             self:RestoreBuildRestrictions()
             self:AddBuildRestriction(categories.CYBRAN *
                 (categories.BUILTBYTIER2COMMANDER + categories.BUILTBYTIER3COMMANDER))
@@ -100,10 +92,6 @@ URL0001 = Class(oldURL0001) {
                 Buff.RemoveBuff(self, 'CybranACUT2BuildRate')
             end
         elseif enh == 'T3Engineering' then
-            local bp = self:GetBlueprint().Enhancements[enh]
-            if not bp then
-                return
-            end
             local cat = ParseEntityCategory(bp.BuildableCategoryAdds)
             self:RemoveBuildRestriction(cat)
             if not Buffs['CybranACUT3BuildRate'] then
@@ -131,10 +119,6 @@ URL0001 = Class(oldURL0001) {
                 Buff.RemoveBuff(self, 'CybranACUT2BuildRate')
             end
         elseif enh == 'T3EngineeringRemove' then
-            local bp = self:GetBlueprint().Economy.BuildRate
-            if not bp then
-                return
-            end
             self:RestoreBuildRestrictions()
             if Buff.HasBuff(self, 'CybranACUT3BuildRate') then
                 Buff.RemoveBuff(self, 'CybranACUT3BuildRate')
