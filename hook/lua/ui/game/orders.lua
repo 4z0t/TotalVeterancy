@@ -43,8 +43,7 @@ local function JumpButtoncr()
                 Func = 'jumpinjack',
                 Args = {
                     owner = GetFocusArmy(),
-                    units =
-                    jumpers,
+                    units = jumpers,
                     jumpto = GetMouseWorldPos(),
                     height = heightx,
                     formation = form,
@@ -83,8 +82,7 @@ local function JumpButtoncr()
             Func = 'rangerings',
             Args = {
                 owner = GetFocusArmy(),
-                units =
-                jumpers,
+                units = jumpers,
                 range = range
             }
         })
@@ -97,33 +95,30 @@ local function JumpButtoncr()
 end
 
 local function mew(availableOrders, availableToggles, newSelection, run)
-    if run then
-        JumpButtoncr()
-        run = false
+    if table.empty(newSelection) then
+        return
     end
-    jumpers = {}
-    local r = false
-    if table.getsize(newSelection) > 0 then
-        local list = ValidateUnitsList(EntityCategoryFilterDown(categories.COMMAND + categories.SUBCOMMANDER +
-            categories.uel0106, newSelection))
-        if list then
-            for k, v in list do
-                local id = v:GetEntityId()
-                local bp = v:GetBlueprint().Categories
-                if UnitData.ALLies or
-                    (UnitData[id].LevelProgress > 5 and EntityCategoryContains(categories.SUBCOMMANDER, v)) or
-                    (UnitData[id].LevelProgress > 31 and EntityCategoryContains(categories.COMMAND, v)) or
-                    EntityCategoryContains(categories.uel0106, v) then
-                    table.insert(jumpers, id)
-                    r = true
-                end
+
+    local found = false
+    local list = ValidateUnitsList(EntityCategoryFilterDown(categories.COMMAND + categories.SUBCOMMANDER +
+        categories.uel0106, newSelection))
+    if list then
+        for k, v in list do
+            local id = v:GetEntityId()
+            local bp = v:GetBlueprint().Categories
+            if UnitData.ALLies or
+                (UnitData[id].LevelProgress > 5 and EntityCategoryContains(categories.SUBCOMMANDER, v)) or
+                (UnitData[id].LevelProgress > 31 and EntityCategoryContains(categories.COMMAND, v)) or
+                EntityCategoryContains(categories.uel0106, v) then
+                found = true
+                break
             end
         end
     end
-    if r then
-        controls.bg.jb:Show()
+    if found then
+        orderCheckboxMap["JumpInJack"]:Enable()
     else
-        controls.bg.jb:Hide()
+        orderCheckboxMap["JumpInJack"]:Disable()
     end
 end
 
@@ -132,4 +127,60 @@ local oldSetAvailableOrders = SetAvailableOrders
 function SetAvailableOrders(availableOrders, availableToggles, newSelection)
     oldSetAvailableOrders(availableOrders, availableToggles, newSelection)
     mew(availableOrders, availableToggles, newSelection, run)
+end
+
+local function JumpButtonBehavior(self, modifiers)
+    if self:IsChecked() then
+        CommandMode.EndCommandMode(true)
+    else
+        local form = false
+        local heightx = 1
+        local range = 'default'
+        if modifiers.Right then
+            form = true
+        else
+            form = false
+        end
+        if modifiers.Shift then
+            heightx = 0.5
+        else
+            heightx = 1
+        end
+        if modifiers.Ctrl then
+            range = 'howlingfury'
+        end
+        if modifiers.Middle then
+            range = 'longrange'
+        end
+        if modifiers.Alt then
+            range = 'danceofdeath'
+        end
+        local modeData = {
+            name = "RULEUCC_Script",
+            AbilityName = "JumpInJack",
+            TaskName = "JumpInJack",
+            Cursor = "RULEUCC_Move",
+            height = heightx,
+            formation = form,
+            range = range
+        }
+        CommandMode.StartCommandMode("order", modeData)
+    end
+end
+
+numSlots = 16
+firstAltSlot = 9
+defaultOrdersTable.JumpInJack = { helpText = "jump_in_jack", bitmapId = 'stand-ground', preferredSlot = 8,
+    behavior = JumpButtonBehavior }
+commonOrders.JumpInJack = true
+do
+    local offsetOrders = {
+
+    }
+    for k, data in defaultOrdersTable do
+        if commonOrders[k] then
+            continue
+        end
+        data.preferredSlot = data.preferredSlot + 1
+    end
 end

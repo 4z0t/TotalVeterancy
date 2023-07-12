@@ -470,330 +470,330 @@ local JumpingJackApeshit = function(self, to, height, RANGE)
     end
     if RANGE == 'danceofdeath' then
         targ = wpn:GetCurrentTarget()
-        do
-            dc = targ:GetHealth() * .0012
-            lvcalc = 1
-            maxcost = 300000
-            BuffBlueprint {
-                Name = 'DanceofDeath',
-                DisplayName = 'DanceofDeath',
-                BuffType = 'DanceofDeath',
-                Stacks = 'ALWAYS',
-                Duration = 7,
-                Affects = {
-                    RateOfFireBuf = {
-                        Mult = 4, }, }, }
+
+        dc = targ:GetHealth() * .0012
+        lvcalc = 1
+        maxcost = 300000
+        BuffBlueprint {
+            Name = 'DanceofDeath',
+            DisplayName = 'DanceofDeath',
+            BuffType = 'DanceofDeath',
+            Stacks = 'ALWAYS',
+            Duration = 7,
+            Affects = {
+                RateOfFireBuf = {
+                    Mult = 4, }, }, }
+    end
+    if RANGE == 'longrange' then
+        maxcost = 130000
+        local c = MATH_IRound
+        nrj = c(rng * .024)
+        dx, dy, dz = dx / nrj, dy / nrj, dz / nrj
+        dxf, dyf, dzf = dx, dy, dz
+        dxm, dzm = math.max(a(dx * .3), 10), math.max(a(dz * .3), 10)
+        dxmin, dxmax, dzmin, dzmax = -a(dxm), a(dxm), -a(dzm, dzm), a(dzm)
+        nrj = nrj - 1
+        x, z = x - dx * nrj, z - dz * nrj
+        nrj = nrj + 1
+        x, z = x + Random(dxmin, dxmax), z + Random(dzmin, dzmax)
+        x, z = maprangecheck(x, z)
+        y = GetTerrainHeight(x, z)
+        dx, dy, dz = unpack(VDiff({ x, y, z }, self:GetPosition()))
+        rng = a(dxf) + dyf + a(dzf)
+    end
+    local rnmax = 179
+    if not s.ALLies then
+        rnmax = 79
+        rmax = 70
+    end
+    local range = -rnmax / rng
+    if rng > rmax or rng < rmin or (RANGE == 'longrange' and nrj < 4) then
+        if RANGE ~= 'howlingfury' then
+            if RANGE ~= 'danceofdeath' then
+                local text = ''
+                if rng > rmax then
+                    text = '-exceeding maximum range'
+                end
+                if rng < rmin or (RANGE == 'longrange' and nrj < 4) then
+                    text = '-below minimum range'
+                end
+                FloatingEntityText(id, 'Jump aborted. ' .. text)
+                return
+            end
         end
-        if RANGE == 'longrange' then
-            maxcost = 130000
-            local c = MATH_IRound
-            nrj = c(rng * .024)
-            dx, dy, dz = dx / nrj, dy / nrj, dz / nrj
-            dxf, dyf, dzf = dx, dy, dz
-            dxm, dzm = math.max(a(dx * .3), 10), math.max(a(dz * .3), 10)
-            dxmin, dxmax, dzmin, dzmax = -a(dxm), a(dxm), -a(dzm, dzm), a(dzm)
-            nrj = nrj - 1
-            x, z = x - dx * nrj, z - dz * nrj
-            nrj = nrj + 1
-            x, z = x + Random(dxmin, dxmax), z + Random(dzmin, dzmax)
+    end
+    rng = rng * height
+    range = math.floor(range)
+    rng = math.pow(rng, 0.85)
+    local nrjj = nrj
+    local packedfun = { maprangecheck, a, ms, mr, lvcalc, dodc, bs, s, wpn, maxcost, id }
+    local function Jump()
+        if self:IsDead() then
+            return
+        end
+        local maprangecheck, a, ms, mr, lvcalc, dodc, bs, s, wpn, maxcost, id = unpack(packedfun)
+        self.jtb = {}
+        local mlt, nrjp = rng, 0
+        local SFX = {
+            Aeon = { {
+                b = 'UALWeapon',
+                c = 'UAB2108_Missile_Serpent2' }, {
+                b = 'Impacts',
+                c = 'AEON_Expl_Med_Impact' }, },
+            Cybran = { {
+                b = 'URLWeapon',
+                c = 'URB2108_Missile_Cruise' }, {
+                b = 'Impacts',
+                c = 'CYB_Expl_Med_Impact' }, },
+            UEF = { {
+                b = 'UELWeapon',
+                c = 'UEB2108_Missile_Cruise' }, {
+                b = 'Impacts',
+                c = 'UEF_Expl_Med_Impact' }, },
+            Seraphim = { {
+                b = 'XSB_Weapon',
+                c = 'XSB2108_Laanse_Missile' }, {
+                b = 'Impacts',
+                c = 'XSL_Artillery_Impact' }, } }
+        local jfx = { {
+            t = 1,
+            r = rng * 0.18,
+            f1 = 'glow_02',
+            f2 = 'ramp_red_02' }, {
+            t = 2,
+            r = rng * 0.38,
+            f1 = 'glow_03',
+            f2 = 'ramp_fire_06' }, {
+            t = 3.8,
+            r = rng * .58,
+            f1 = 'glow_03',
+            f2 = 'ramp_nuke_04' } }
+        local tfx = { '_test_swirl_01', 'nuke_munition_launch_trail_05', 'air_hover_exhaust_01', }
+        local hfx = { 'a3_end_nis_01', 'a3_end_nis_02', 'czar_splash_01', 'czar_splash_03', 'distortion_ring_01',
+            'destruction_explosion_concussion_ring_01', }
+        local cbp = {
+            Aeon = '/projectiles/AIFFragmentationSensorShell01/AIFFragmentationSensorShell01_proj.bp',
+            Cybran = '/projectiles/aifquanticcluster01/aifquanticcluster01_proj.bp',
+            UEF = '/projectiles/TIFHETacticalNuclearShell01/TIFHETacticalNuclearShell01_proj.bp',
+            Seraphim = '/projectiles/adfoblivioncannon04/adfoblivioncannon04_proj.bp',
+            current = '' }
+        local function cee(X)
+            return CreateEmitterOnEntity(self, army, '/effects/emitters/' .. X .. '_emit.bp')
+        end
+
+        local function vfx(VFX, bag, rep)
+            for k, v in VFX do
+                local f = cee(v)
+                if rep then
+                    f:SetEmitterParam('Lifetime', -1)
+                end
+                self.Trash:Add(f)
+                table.insert(bag, f)
+            end
+        end
+
+        local function clfx(bag)
+            for k, v in bag do
+                v:Destroy()
+                v = nil
+            end
+        end
+
+        local function sfx(fn)
+            local L = 'Weapon_LodCutoff'
+            self:PlaySound(Sound {
+                Bank =
+                fn.b, Cue =
+                fn.c, LodCutoff = L, })
+        end
+
+        local function crv(mc)
+            return ms(mr(mc))
+        end
+
+        local function ckdod()
+            if RANGE == 'danceofdeath' then
+                if not targ:IsDead() then
+                    return true
+                end
+                return false
+            end
+        end
+
+        local function random(inp)
+            return Random(-a(inp), a(inp))
+        end
+
+        local function hv(r)
+            return random(r) * .1 * Random()
+        end
+
+        local function chkdrn()
+            x, y, z = targ:GetPositionXYZ()
+            x, z = x + random(20), z + random(20)
+            x, z = maprangecheck(x, z)
+            y = GetTerrainHeight(x, z)
+            return x, y, z
+        end
+
+        local function faceIt(ovrr)
+            local ht = wpn:WeaponHasTarget()
+            if ht or ovrr then
+                if ckdod() and targ then
+                    wpn:SetTargetEntity(targ)
+                end
+            end
+            local gps = self:GetPosition()
+            local ps = wpn:GetCurrentTargetPos() or { x, y, z }
+            local pv = VDiff(ps, gps)
+            if ovrr then
+                pv[2] = 0
+            end
+            ps = OrientFromDir(pv)
+            self:SetOrientation(ps, true)
+        end
+
+        local function Busy(bool) self:SetImmobile(bool) self:SetBusy(bool)
+        end
+
+        Busy(true)
+        if s.ALLies == false and nrjj == nrj and not self.Vetredirector then
+            local jm = 250 * (lvcalc) * math.pow(nrj * height * bs, 0.5) * dodc
+            if jm > maxcost then
+                ja = maxcost
+            end
+            self.jcb = {}
+            local fx = { 'explosion_fire_sparks_02', 'build_yellow_paint_spray', 'dust_cloud_07', 'quark_bomb2_01' }
+            vfx(fx, self.jcb)
+            self.event = CreateEconomyEvent(self, 0, jm, 0)
+            mlt = 12
+            WaitFor(self.event)
+            if self.event then
+                RemoveEconomyEvent(self, self.event)
+                self.event = nil
+            end
+            clfx(self.jcb)
+        end
+        sfx(SFX[faction][1])
+        for i = 1, 3 do
+            local j = jfx[i]
+            CreateLightParticle(self, -1, army, j.t, j.r, j.f1, j.f2)
+        end
+        if not EntityCategoryContains(categories.uel0106, self) then
+            vfx(tfx, self.jtb)
+            DamageArea(self, self:GetPosition(), 12, rng * mlt, 'Force', false, false)
+        end
+        IssueClearCommands({ self })
+        if ckdod() then
+            range = -3
+            Buff.ApplyBuff(self, 'DanceofDeath', self)
+            wpn:SetTargetEntity(targ)
+            nrjp = 2
+        end
+        WaitTicks(1)
+        self:SetWorkProgress(0.0)
+        faceIt(0)
+        if RANGE ~= 'howlingfury' then
+            local div, mult = 0.0055, 1
+            if s.ALLies == false then
+                div = 0.0125
+                mult = 2.25
+            end
+            for i = rnmax, 0, range do
+                if self:IsDead() then
+                    return
+                end
+                self:SetPosition({ x - (dx * div * i), y - (dy * div * i) + crv(i * mult) * rng, z - (dz * div * i) }
+                    , true)
+                faceIt()
+                WaitTicks(1)
+            end
+        else
+            local pass = { x, y, z }
+            Buff.ApplyBuff(self, 'HowlingFury' .. faction, self)
+            for i = 1, table.getn(bp.Weapon) do
+                if bp.Weapon[i].ProjectileId ~= "" then
+                    wpn = self:GetWeapon(i)
+                    break
+                end
+            end
+            cbp.current = wpn:GetProjectileBlueprint().BlueprintId
+            wpn:ChangeProjectileBlueprint(cbp[faction])
+            wpn:SetFiringRandomness(4)
+            vfx(hfx, self.jtb, true)
+            height = math.ceil(height + GetSurfaceHeight(x, z) - GetTerrainHeight(x, z) +
+                math.pow(self.VeteranLevel, 0.5))
+            local oft = -0.2
+            for i = height, 0, -1 do
+                if self:IsDead() then
+                    return
+                end
+                to = self:GetPosition()
+                x, y, z = to[1] + 1, to[2] - a(hv(1)), to[3] + 1
+                self:SetPosition({ to[1] + oft, to[2] + 0.1 * math.pow(i, .6), to[3] + oft }, true)
+                faceIt()
+                WaitTicks(1)
+            end
+            for i = self.VeteranLevel + 50, 0, -1 do
+                if self:IsDead() then
+                    return
+                end
+                if math.mod(i, 10) == 0 then
+                    FloatingEntityText(id, i * 0.1, nil, nil, 'FFFAEBD7')
+                end
+                to = self:GetPosition()
+                x, y, z = x + 1, y - a(hv(10)), z + 1
+                self:SetPosition({ to[1] + ms(i) * .1, to[2], to[3] + math.cos(i) * .1 }, true)
+                faceIt()
+                WaitTicks(1)
+            end
+            local descent = math.floor(to[2] - GetTerrainHeight(to[1], to[3]))
+            for i = descent, 0, -4 do
+                if self:IsDead() then
+                    return
+                end
+                to = self:GetPosition()
+                self:SetPosition({ to[1], to[2] - 0.1 * i, to[3] }, true)
+                faceIt()
+                WaitTicks(1)
+            end
+            x, z = maprangecheck(to[1], to[3])
+            y = GetTerrainHeight(x, z)
+            wpn:ChangeProjectileBlueprint(cbp.current)
+            wpn:SetFiringRandomness(0)
+            Buff.RemoveBuff(self, 'HowlingFury' .. faction, true, self)
+        end
+        faceIt(0)
+        self:SetPosition({ x, y, z }, true)
+        cee('czar_splash_01'):ScaleEmitter(0.1)
+        sfx(SFX[faction][2])
+        clfx(self.jtb)
+        self.jtb = nil
+        Busy(false)
+        self.jump:Destroy()
+        self.jump = nil
+        nrj = nrj - 1 + nrjp
+        if nrj > 0 and (RANGE == 'longrange' or ckdod()) then
+            x, z = x + dxf + Random(dxmin, dxmax), z + dzf + Random(dzmin, dzmax)
+            if nrj < 2 then
+                x, y, z = unpack(finalD)
+            end
+            if ckdod() then
+                x, y, z = chkdrn()
+            end
             x, z = maprangecheck(x, z)
             y = GetTerrainHeight(x, z)
             dx, dy, dz = unpack(VDiff({ x, y, z }, self:GetPosition()))
-            rng = a(dxf) + dyf + a(dzf)
-        end
-        local rnmax = 179
-        if not s.ALLies then
-            rnmax = 79
-            rmax = 70
-        end
-        local range = -rnmax / rng
-        if rng > rmax or rng < rmin or (RANGE == 'longrange' and nrj < 4) then
-            if RANGE ~= 'howlingfury' then
-                if RANGE ~= 'danceofdeath' then
-                    local text = ''
-                    if rng > rmax then
-                        text = '-exceeding maximum range'
-                    end
-                    if rng < rmin or (RANGE == 'longrange' and nrj < 4) then
-                        text = '-below minimum range'
-                    end
-                    FloatingEntityText(id, 'Jump aborted. ' .. text)
-                    return
-                end
-            end
-        end
-        rng = rng * height
-        range = math.floor(range)
-        rng = math.pow(rng, 0.85)
-        local nrjj = nrj
-        local packedfun = { maprangecheck, a, ms, mr, lvcalc, dodc, bs, s, wpn, maxcost, id }
-        local function Jump()
-            if self:IsDead() then
-                return
-            end
-            local maprangecheck, a, ms, mr, lvcalc, dodc, bs, s, wpn, maxcost, id = unpack(packedfun)
-            self.jtb = {}
-            local mlt, nrjp = rng, 0
-            local SFX = {
-                Aeon = { {
-                    b = 'UALWeapon',
-                    c = 'UAB2108_Missile_Serpent2' }, {
-                    b = 'Impacts',
-                    c = 'AEON_Expl_Med_Impact' }, },
-                Cybran = { {
-                    b = 'URLWeapon',
-                    c = 'URB2108_Missile_Cruise' }, {
-                    b = 'Impacts',
-                    c = 'CYB_Expl_Med_Impact' }, },
-                UEF = { {
-                    b = 'UELWeapon',
-                    c = 'UEB2108_Missile_Cruise' }, {
-                    b = 'Impacts',
-                    c = 'UEF_Expl_Med_Impact' }, },
-                Seraphim = { {
-                    b = 'XSB_Weapon',
-                    c = 'XSB2108_Laanse_Missile' }, {
-                    b = 'Impacts',
-                    c = 'XSL_Artillery_Impact' }, } }
-            local jfx = { {
-                t = 1,
-                r = rng * 0.18,
-                f1 = 'glow_02',
-                f2 = 'ramp_red_02' }, {
-                t = 2,
-                r = rng * 0.38,
-                f1 = 'glow_03',
-                f2 = 'ramp_fire_06' }, {
-                t = 3.8,
-                r = rng * .58,
-                f1 = 'glow_03',
-                f2 = 'ramp_nuke_04' } }
-            local tfx = { '_test_swirl_01', 'nuke_munition_launch_trail_05', 'air_hover_exhaust_01', }
-            local hfx = { 'a3_end_nis_01', 'a3_end_nis_02', 'czar_splash_01', 'czar_splash_03', 'distortion_ring_01',
-                'destruction_explosion_concussion_ring_01', }
-            local cbp = {
-                Aeon = '/projectiles/AIFFragmentationSensorShell01/AIFFragmentationSensorShell01_proj.bp',
-                Cybran = '/projectiles/aifquanticcluster01/aifquanticcluster01_proj.bp',
-                UEF = '/projectiles/TIFHETacticalNuclearShell01/TIFHETacticalNuclearShell01_proj.bp',
-                Seraphim = '/projectiles/adfoblivioncannon04/adfoblivioncannon04_proj.bp',
-                current = '' }
-            local function cee(X)
-                return CreateEmitterOnEntity(self, army, '/effects/emitters/' .. X .. '_emit.bp')
-            end
-
-            local function vfx(VFX, bag, rep)
-                for k, v in VFX do
-                    local f = cee(v)
-                    if rep then
-                        f:SetEmitterParam('Lifetime', -1)
-                    end
-                    self.Trash:Add(f)
-                    table.insert(bag, f)
-                end
-            end
-
-            local function clfx(bag)
-                for k, v in bag do
-                    v:Destroy()
-                    v = nil
-                end
-            end
-
-            local function sfx(fn)
-                local L = 'Weapon_LodCutoff'
-                self:PlaySound(Sound {
-                    Bank =
-                    fn.b, Cue =
-                    fn.c, LodCutoff = L, })
-            end
-
-            local function crv(mc)
-                return ms(mr(mc))
-            end
-
-            local function ckdod()
-                if RANGE == 'danceofdeath' then
-                    if not targ:IsDead() then
-                        return true
-                    end
-                    return false
-                end
-            end
-
-            local function random(inp)
-                return Random(-a(inp), a(inp))
-            end
-
-            local function hv(r)
-                return random(r) * .1 * Random()
-            end
-
-            local function chkdrn()
-                x, y, z = targ:GetPositionXYZ()
-                x, z = x + random(20), z + random(20)
-                x, z = maprangecheck(x, z)
-                y = GetTerrainHeight(x, z)
-                return x, y, z
-            end
-
-            local function faceIt(ovrr)
-                local ht = wpn:WeaponHasTarget()
-                if ht or ovrr then
-                    if ckdod() and targ then
-                        wpn:SetTargetEntity(targ)
-                    end
-                end
-                local gps = self:GetPosition()
-                local ps = wpn:GetCurrentTargetPos() or { x, y, z }
-                local pv = VDiff(ps, gps)
-                if ovrr then
-                    pv[2] = 0
-                end
-                ps = OrientFromDir(pv)
-                self:SetOrientation(ps, true)
-            end
-
-            local function Busy(bool) self:SetImmobile(bool) self:SetBusy(bool)
-            end
-
-            Busy(true)
-            if s.ALLies == false and nrjj == nrj and not self.Vetredirector then
-                local jm = 250 * (lvcalc) * math.pow(nrj * height * bs, 0.5) * dodc
-                if jm > maxcost then
-                    ja = maxcost
-                end
-                self.jcb = {}
-                local fx = { 'explosion_fire_sparks_02', 'build_yellow_paint_spray', 'dust_cloud_07', 'quark_bomb2_01' }
-                vfx(fx, self.jcb)
-                self.event = CreateEconomyEvent(self, 0, jm, 0)
-                mlt = 12
-                WaitFor(self.event)
-                if self.event then
-                    RemoveEconomyEvent(self, self.event)
-                    self.event = nil
-                end
-                clfx(self.jcb)
-            end
-            sfx(SFX[faction][1])
-            for i = 1, 3 do
-                local j = jfx[i]
-                CreateLightParticle(self, -1, army, j.t, j.r, j.f1, j.f2)
-            end
-            if not EntityCategoryContains(categories.uel0106, self) then
-                vfx(tfx, self.jtb)
-                DamageArea(self, self:GetPosition(), 12, rng * mlt, 'Force', false, false)
-            end
-            IssueClearCommands({ self })
-            if ckdod() then
-                range = -3
-                Buff.ApplyBuff(self, 'DanceofDeath', self)
-                wpn:SetTargetEntity(targ)
-                nrjp = 2
-            end
-            WaitTicks(1)
-            self:SetWorkProgress(0.0)
-            faceIt(0)
-            if RANGE ~= 'howlingfury' then
-                local div, mult = 0.0055, 1
-                if s.ALLies == false then
-                    div = 0.0125
-                    mult = 2.25
-                end
-                for i = rnmax, 0, range do
-                    if self:IsDead() then
-                        return
-                    end
-                    self:SetPosition({ x - (dx * div * i), y - (dy * div * i) + crv(i * mult) * rng, z - (dz * div * i) }
-                        , true)
-                    faceIt()
-                    WaitTicks(1)
-                end
-            else
-                local pass = { x, y, z }
-                Buff.ApplyBuff(self, 'HowlingFury' .. faction, self)
-                for i = 1, table.getn(bp.Weapon) do
-                    if bp.Weapon[i].ProjectileId ~= "" then
-                        wpn = self:GetWeapon(i)
-                        break
-                    end
-                end
-                cbp.current = wpn:GetProjectileBlueprint().BlueprintId
-                wpn:ChangeProjectileBlueprint(cbp[faction])
-                wpn:SetFiringRandomness(4)
-                vfx(hfx, self.jtb, true)
-                height = math.ceil(height + GetSurfaceHeight(x, z) - GetTerrainHeight(x, z) +
-                    math.pow(self.VeteranLevel, 0.5))
-                local oft = -0.2
-                for i = height, 0, -1 do
-                    if self:IsDead() then
-                        return
-                    end
-                    to = self:GetPosition()
-                    x, y, z = to[1] + 1, to[2] - a(hv(1)), to[3] + 1
-                    self:SetPosition({ to[1] + oft, to[2] + 0.1 * math.pow(i, .6), to[3] + oft }, true)
-                    faceIt()
-                    WaitTicks(1)
-                end
-                for i = self.VeteranLevel + 50, 0, -1 do
-                    if self:IsDead() then
-                        return
-                    end
-                    if math.mod(i, 10) == 0 then
-                        FloatingEntityText(id, i * 0.1, nil, nil, 'FFFAEBD7')
-                    end
-                    to = self:GetPosition()
-                    x, y, z = x + 1, y - a(hv(10)), z + 1
-                    self:SetPosition({ to[1] + ms(i) * .1, to[2], to[3] + math.cos(i) * .1 }, true)
-                    faceIt()
-                    WaitTicks(1)
-                end
-                local descent = math.floor(to[2] - GetTerrainHeight(to[1], to[3]))
-                for i = descent, 0, -4 do
-                    if self:IsDead() then
-                        return
-                    end
-                    to = self:GetPosition()
-                    self:SetPosition({ to[1], to[2] - 0.1 * i, to[3] }, true)
-                    faceIt()
-                    WaitTicks(1)
-                end
-                x, z = maprangecheck(to[1], to[3])
-                y = GetTerrainHeight(x, z)
-                wpn:ChangeProjectileBlueprint(cbp.current)
-                wpn:SetFiringRandomness(0)
-                Buff.RemoveBuff(self, 'HowlingFury' .. faction, true, self)
-            end
-            faceIt(0)
-            self:SetPosition({ x, y, z }, true)
-            cee('czar_splash_01'):ScaleEmitter(0.1)
-            sfx(SFX[faction][2])
-            clfx(self.jtb)
-            self.jtb = nil
-            Busy(false)
-            self.jump:Destroy()
-            self.jump = nil
-            nrj = nrj - 1 + nrjp
-            if nrj > 0 and (RANGE == 'longrange' or ckdod()) then
-                x, z = x + dxf + Random(dxmin, dxmax), z + dzf + Random(dzmin, dzmax)
-                if nrj < 2 then
-                    x, y, z = unpack(finalD)
-                end
-                if ckdod() then
-                    x, y, z = chkdrn()
-                end
-                x, z = maprangecheck(x, z)
-                y = GetTerrainHeight(x, z)
-                dx, dy, dz = unpack(VDiff({ x, y, z }, self:GetPosition()))
-                self.jump = ForkThread(Jump, self)
-            end
-        end
-
-        if not self.jump then
             self.jump = ForkThread(Jump, self)
         end
-        self.Trash:Add(self.jump)
     end
+
+    if not self.jump then
+        self.jump = ForkThread(Jump, self)
+    end
+    self.Trash:Add(self.jump)
 end
+
 local DanceofDeath = function(self, to, height, range)
     self.dncod = ForkThread(function()
         local wpn = self:GetWeapon(1)
@@ -858,12 +858,9 @@ Unit = Class(oldUnit) {
             end
         end
     end,
-    JumpingJackApeshit =
-    JumpingJackApeshit,
-    DanceofDeath =
-    DanceofDeath,
-    HowlingFury =
-    HowlingFury,
+    JumpingJackApeshit = JumpingJackApeshit,
+    DanceofDeath = DanceofDeath,
+    HowlingFury = HowlingFury,
     OnStartBeingBuilt = function(self, builder, layer)
         if builder.LevelProgress and builder.LevelProgress > 5 and builder.vetToggle and builder.vetToggle > 0 and
             not self:GetBlueprint().Economy.vetBuild then
@@ -1292,111 +1289,142 @@ Unit = Class(oldUnit) {
         self.xp = self.xp + (amount)
         self:CheckVeteranLevel()
     end,
-    OnKilled = function(self, instigator, type, overkillRatio) StorageBuffs(self, instigator, type, overkillRatio)
-        AutoRevive(self
-            , instigator, type, overkillRatio)
+    OnKilled = function(self, instigator, type, overkillRatio)
+        StorageBuffs(self, instigator, type, overkillRatio)
+        AutoRevive(self, instigator, type, overkillRatio)
         XPaward(self, instigator, type, overkillRatio)
-        oldUnit.OnKilled(self,
-            instigator, type, overkillRatio)
+        oldUnit.OnKilled(self, instigator, type, overkillRatio)
     end,
-    CreateShield = function(self, shieldSpec) oldUnit.CreateShield(self, shieldSpec)
-        Buff.BuffAffectUnit(self,
-            'VeterancyShield', self, true)
+    CreateShield = function(self, shieldSpec)
+        oldUnit.CreateShield(self, shieldSpec)
+        Buff.BuffAffectUnit(self, 'VeterancyShield', self, true)
     end,
-    CreatePersonalShield = function(self, shieldSpec) oldUnit.CreatePersonalShield(self, shieldSpec)
-        Buff.BuffAffectUnit(self
-            , 'VeterancyShield', self, true)
+    CreatePersonalShield = function(self, shieldSpec)
+        oldUnit.CreatePersonalShield(self, shieldSpec)
+        Buff.BuffAffectUnit(self, 'VeterancyShield', self, true)
     end,
     InitiateTeleportThread = function(self, teleporter, location, orientation)
-        local tbp = teleporter:GetBlueprint()
-        local ubp = self:GetBlueprint()
         self.UnitBeingTeleported = self
         self:SetImmobile(true)
         self:PlayUnitSound('TeleportStart')
         self:PlayUnitAmbientSound('TeleportLoop')
-        local bp = self:GetBlueprint().Economy
+
+
+        local bp = self.Blueprint
+        local teleDelay = bp.General.TeleportDelay
+
+        local bpEco = bp.Economy
+        if not bpEco then
+            return
+        end
+
         local energyCost, time
-        if bp then
-            local mass = bp.BuildCostMass * (bp.TeleportMassMod or 0.01)
-            local energy = bp.BuildCostEnergy * (bp.TeleportEnergyMod or 0.01)
-            energyCost = mass + energy
-            time = energyCost * (bp.TeleportTimeMod or 0.01)
-            if s.ALLies == false then
-                if EntityCategoryContains(categories.COMMAND, self) then
-                    if (time - self.VeteranLevel * 0.2) > 6 then
-                        time = time - (self.VeteranLevel * 0.2)
-                    else
-                        time = 6
-                    end
+
+        local mass = bpEco.BuildCostMass * (bpEco.TeleportMassMod or 0.01)
+        local energy = bpEco.BuildCostEnergy * (bpEco.TeleportEnergyMod or 0.01)
+        energyCost = mass + energy
+        time = energyCost * (bpEco.TeleportTimeMod or 0.01)
+
+        if teleDelay then
+            energyCostMod = (time + teleDelay) / time
+            time = time + teleDelay
+            energyCost = energyCost * energyCostMod
+
+            self.TeleportDestChargeBag = nil
+            self.TeleportCybranSphere = nil -- this fixes some "...Game object has been destroyed" bugs in EffectUtilities.lua:TeleportChargingProgress
+        end
+
+        if not s.Allies then
+            if EntityCategoryContains(categories.COMMAND, self) then
+                if (time - self.VeteranLevel * 0.2) > 6 then
+                    time = time - (self.VeteranLevel * 0.2)
                 else
-                    if EntityCategoryContains(categories.SUBCOMMANDER, self) then
-                        if (time - self.VeteranLevel * 0.4) > 10 then
-                            time = time - (self.VeteranLevel * 0.4)
-                        else
-                            time = 10
-                        end
-                    else
-                        if (time - self.VeteranLevel) > 15 then
-                            time = time - (self.VeteranLevel)
-                        else
-                            time = 15
-                        end
-                    end
+                    time = 6
+                end
+            elseif EntityCategoryContains(categories.SUBCOMMANDER, self) then
+                if (time - self.VeteranLevel * 0.4) > 10 then
+                    time = time - (self.VeteranLevel * 0.4)
+                else
+                    time = 10
                 end
             else
-                if EntityCategoryContains(categories.COMMAND, self) then
-                    if (time - self.VeteranLevel * 0.5) > 0 then
-                        time = time - (self.VeteranLevel * 0.5)
-                    else
-                        time = 0.1
-                    end
+                if (time - self.VeteranLevel) > 15 then
+                    time = time - (self.VeteranLevel)
                 else
-                    if EntityCategoryContains(categories.SUBCOMMANDER, self) then
-                        if (time - self.VeteranLevel) > 0.2 then
-                            time = time - (self.VeteranLevel)
-                        else
-                            time = 0.2
-                        end
-                    else
-                        if (time - self.VeteranLevel) > 1 then
-                            time = time - (self.VeteranLevel)
-                        else
-                            time = 1
-                        end
-                    end
+                    time = 15
                 end
             end
-            self.TeleportDrain = CreateEconomyEvent(self, energyCost or 100, 0, time or 5, self.UpdateTeleportProgress)
-            self:PlayTeleportChargeEffects()
-            WaitFor(self.TeleportDrain)
-            if self.TeleportDrain then
-                RemoveEconomyEvent(self, self.TeleportDrain)
-                self.TeleportDrain = nil
+        else
+            if EntityCategoryContains(categories.COMMAND, self) then
+                if (time - self.VeteranLevel * 0.5) > 0 then
+                    time = time - (self.VeteranLevel * 0.5)
+                else
+                    time = 0.1
+                end
+            elseif EntityCategoryContains(categories.SUBCOMMANDER, self) then
+                if (time - self.VeteranLevel) > 0.2 then
+                    time = time - (self.VeteranLevel)
+                else
+                    time = 0.2
+                end
+            else
+                if (time - self.VeteranLevel) > 1 then
+                    time = time - (self.VeteranLevel)
+                else
+                    time = 1
+                end
             end
-            self:PlayTeleportOutEffects()
-            self:CleanupTeleportChargeEffects()
-            WaitSeconds(0.1)
-            self:SetWorkProgress(0.0)
-            if not self:IsDead() then
-                Warp(self, location, orientation)
-            end
-            self:PlayTeleportInEffects()
-            WaitSeconds(0.1)
-            self:StopUnitAmbientSound('TeleportLoop')
-            self:PlayUnitSound('TeleportEnd')
-            self:SetImmobile(false)
-            self.UnitBeingTeleported = nil
-            self.TeleportThread = nil
+
         end
+
+
+        self.TeleportDrain = CreateEconomyEvent(self, energyCost or 100, 0, time or 5, self.UpdateTeleportProgress)
+        -- Create teleport charge effect
+        self:PlayTeleportChargeEffects(location, orientation)
+        WaitFor(self.TeleportDrain)
+
+        if self.TeleportDrain then
+            RemoveEconomyEvent(self, self.TeleportDrain)
+            self.TeleportDrain = nil
+        end
+
+        self:PlayTeleportOutEffects()
+        self:CleanupTeleportChargeEffects()
+        WaitSeconds(0.1)
+
+        -- prevent cheats (teleporting after transport, teleporting without having the enhancement)
+        if self:IsUnitState('Teleporting') and self:TestCommandCaps('RULEUCC_Teleport') then
+            Warp(self, location, orientation)
+            self:PlayTeleportInEffects()
+        else
+            IssueClearCommands { self }
+        end
+
+        self:SetWorkProgress(0.0)
+        self:CleanupRemainingTeleportChargeEffects()
+
+        -- Perform cooldown Teleportation FX here
+        WaitSeconds(0.1)
+
+        -- Landing Sound
+        self:StopUnitAmbientSound('TeleportLoop')
+        self:PlayUnitSound('TeleportEnd')
+        self:SetImmobile(false)
+        self.UnitBeingTeleported = nil
+        self.TeleportThread = nil
+
     end,
+
     GetShield = function(self)
         return self.MyShield or nil
     end,
-    EnableUnitIntel = function(self, intel)
+
+    EnableUnitIntel = function(self, disabler, intel)
         if intel and intel == 'Cloak' then
             if not self.dnt then
                 self:SetDoNotTarget(true)
-                self.dnt = ForkThread(function() WaitTicks(1)
+                self.dnt = ForkThread(function()
+                    WaitTicks(1)
                     self:SetDoNotTarget(false)
                     self.dnt:Destroy()
                     self.dnt = nil
@@ -1404,8 +1432,9 @@ Unit = Class(oldUnit) {
                 self.Trash:Add(self.dnt)
             end
         end
-        oldUnit.EnableUnitIntel(self, intel)
+        oldUnit.EnableUnitIntel(self, disabler, intel)
     end,
+
     GetHealthPercent = function(self)
         local health = self:GetHealth()
         local maxHealth = self:GetMaxHealth()
