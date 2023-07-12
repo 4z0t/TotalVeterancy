@@ -53,7 +53,8 @@ function GetConstructEconomyModel(builder, targetData)
     return time / rate, energy, mass
 end
 
-function GameState() local result
+function GameState()
+    local result
     local uiStateFunc = rawget(_G, 'GetCurrentUIState')
     if uiStateFunc then
         result = uiStateFunc()

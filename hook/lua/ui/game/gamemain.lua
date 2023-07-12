@@ -137,7 +137,8 @@ function ToggleButtons(parent)
     local ShareXPEnabled = true
     local sxpButton = UIUtil.CreateButtonStd(group, '/game/mfd_btn/team-color')
     LayoutHelpers.AtLeftTopIn(sxpButton, group, 250, 60)
-    sxpButton.OnClick = function() SimCallback({
+    sxpButton.OnClick = function()
+        SimCallback({
             Func = 'ShareXPEnabled',
             Args = {
                 owner = GetFocusArmy(),
@@ -155,7 +156,8 @@ function ToggleButtons(parent)
     local togglebalance = true
     local TBButton = UIUtil.CreateButtonStd(group, '/game/mfd_btn/team-color')
     LayoutHelpers.AtLeftTopIn(TBButton, group, 280, 60)
-    TBButton.OnClick = function() SimCallback({
+    TBButton.OnClick = function()
+        SimCallback({
             Func = 'ToggleBalance',
             Args = {
                 owner = GetFocusArmy(),

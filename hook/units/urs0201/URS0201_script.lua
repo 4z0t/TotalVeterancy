@@ -27,22 +27,31 @@ URS0201 = Class(oldURS0201) {
             self:SetImmobile(true)
             self.AnimManip:PlayAnim(self:GetBlueprint().Display.AnimationTransform)
             self.AnimManip:SetRate(2)
-            self.IsWaiting = true WaitFor(self.AnimManip)
-            self:SetCollisionShape('Box', bp.CollisionOffsetX or 0, (bp.CollisionOffsetY + (bp.SizeY * 1.0)) or 0, bp.CollisionOffsetZ or 0, bp.SizeX * scale, bp.SizeY * scale, bp.SizeZ * scale)
-            self.IsWaiting = false self:SetImmobile(false)
+            self.IsWaiting = true
+            WaitFor(self.AnimManip)
+            self:SetCollisionShape('Box', bp.CollisionOffsetX or 0, (bp.CollisionOffsetY + (bp.SizeY * 1.0)) or 0,
+                bp.CollisionOffsetZ or 0, bp.SizeX * scale, bp.SizeY * scale, bp.SizeZ * scale)
+            self.IsWaiting = false
+            self:SetImmobile(false)
             self.SwitchAnims = true
-            self.Walking = true self.Trash:Add(self.AnimManip)
+            self.Walking = true
+            self.Trash:Add(self.AnimManip)
         else
             self:SetImmobile(true)
             if Buffs['CybranDestroyerLandSpeed'] then
                 Buff.RemoveBuff(self, 'CybranDestroyerLandSpeed', false)
             end
             self.AnimManip:PlayAnim(self:GetBlueprint().Display.AnimationTransform)
-            self.AnimManip:SetAnimationFraction(1) self.AnimManip:SetRate(-2)
-            self.IsWaiting = true WaitFor(self.AnimManip)
-            self:SetCollisionShape('Box', bp.CollisionOffsetX or 0, (bp.CollisionOffsetY + (bp.SizeY * 0.5)) or 0, bp.CollisionOffsetZ or 0, bp.SizeX * scale, bp.SizeY * scale, bp.SizeZ * scale)
-            self.IsWaiting = false self.AnimManip:Destroy()
-            self.AnimManip = nil self:SetImmobile(false)
+            self.AnimManip:SetAnimationFraction(1)
+            self.AnimManip:SetRate(-2)
+            self.IsWaiting = true
+            WaitFor(self.AnimManip)
+            self:SetCollisionShape('Box', bp.CollisionOffsetX or 0, (bp.CollisionOffsetY + (bp.SizeY * 0.5)) or 0,
+                bp.CollisionOffsetZ or 0, bp.SizeX * scale, bp.SizeY * scale, bp.SizeZ * scale)
+            self.IsWaiting = false
+            self.AnimManip:Destroy()
+            self.AnimManip = nil
+            self:SetImmobile(false)
             self.Walking = false
         end
     end,

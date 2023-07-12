@@ -31,7 +31,7 @@ local function JumpButtoncr()
         return controls.bg.Left() + 16
     end)
     controls.bg.jb.Bottom:Set(function()
-        return controls.bg.Top() + 12
+        return controls.bg.Top() + 10
     end)
     controls.bg.jb.OnClick = function(self, modifiers)
         local dot = import('/lua/ui/uimain.lua').AddOnMouseClickedFunc

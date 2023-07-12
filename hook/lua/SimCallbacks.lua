@@ -28,7 +28,8 @@ Callbacks.BuffAIs = function(data)
         if hum == 1 then
             for k, v in ArmyBrains do
                 if v.BrainType == 'AI' then
-                    local units = v:GetListOfUnits(categories.MOBILE - categories.AIR - categories.UNSELECTABLE - categories.UNTARGETABLE - categories.INSIGNIFICANTUNIT, false)
+                    local units = v:GetListOfUnits(categories.MOBILE - categories.AIR - categories.UNSELECTABLE -
+                        categories.UNTARGETABLE - categories.INSIGNIFICANTUNIT, false)
                     if table.getn(units) > 0 then
                         for i, unit in units do
                             unit:AddLevels(1)
@@ -36,7 +37,8 @@ Callbacks.BuffAIs = function(data)
                     end
                 end
             end
-            buffed = buffed + 1 PrintText('Increased Land AI Levels by ' .. buffed .. '!', 18, 'ffbfbfbf', 4, 'center')
+            buffed = buffed + 1
+            PrintText('Increased Land AI Levels by ' .. buffed .. '!', 18, 'ffbfbfbf', 4, 'center')
         end
     end
 end
@@ -53,7 +55,8 @@ Callbacks.BuffButtonDef = function(data)
         if hum == 1 then
             for k, v in ArmyBrains do
                 if v.BrainType == 'AI' then
-                    local units = v:GetListOfUnits(categories.STRUCTURE * categories.DEFENSE + categories.FACTORY - categories.UNSELECTABLE - categories.UNTARGETABLE - categories.INSIGNIFICANTUNIT, false)
+                    local units = v:GetListOfUnits(categories.STRUCTURE * categories.DEFENSE + categories.FACTORY -
+                        categories.UNSELECTABLE - categories.UNTARGETABLE - categories.INSIGNIFICANTUNIT, false)
                     if table.getn(units) > 0 then
                         for i, unit in units do
                             unit:AddLevels(1)
@@ -61,7 +64,8 @@ Callbacks.BuffButtonDef = function(data)
                     end
                 end
             end
-            buffedDef = buffedDef + 1 PrintText('Increased AI defense Levels by ' .. buffedDef .. '!', 18, 'ffbfbfbf', 4, 'center')
+            buffedDef = buffedDef + 1
+            PrintText('Increased AI defense Levels by ' .. buffedDef .. '!', 18, 'ffbfbfbf', 4, 'center')
         end
     end
 end
@@ -78,7 +82,8 @@ Callbacks.bBBase = function(data)
         if hum == 1 then
             for k, v in ArmyBrains do
                 if v.BrainType == 'AI' then
-                    local units = v:GetListOfUnits(categories.STRUCTURE - categories.UNSELECTABLE - categories.UNTARGETABLE - categories.INSIGNIFICANTUNIT, false)
+                    local units = v:GetListOfUnits(categories.STRUCTURE - categories.UNSELECTABLE -
+                        categories.UNTARGETABLE - categories.INSIGNIFICANTUNIT, false)
                     if table.getn(units) > 0 then
                         for i, unit in units do
                             unit:AddLevels(1)
@@ -86,7 +91,8 @@ Callbacks.bBBase = function(data)
                     end
                 end
             end
-            bBBase = bBBase + 1 PrintText('Increased AI Base Levels by ' .. bBBase .. '!', 18, 'ffbfbfbf', 4, 'center')
+            bBBase = bBBase + 1
+            PrintText('Increased AI Base Levels by ' .. bBBase .. '!', 18, 'ffbfbfbf', 4, 'center')
         end
     end
 end
@@ -127,7 +133,8 @@ Callbacks.BuffAIsSea = function(data)
         if hum == 1 then
             for k, v in ArmyBrains do
                 if v.BrainType == 'AI' then
-                    local units = v:GetListOfUnits(categories.NAVAL - categories.AIR - categories.UNSELECTABLE - categories.UNTARGETABLE - categories.INSIGNIFICANTUNIT, false)
+                    local units = v:GetListOfUnits(categories.NAVAL - categories.AIR - categories.UNSELECTABLE -
+                        categories.UNTARGETABLE - categories.INSIGNIFICANTUNIT, false)
                     if table.getn(units) > 0 then
                         for i, unit in units do
                             unit:AddLevels(1)
@@ -135,7 +142,8 @@ Callbacks.BuffAIsSea = function(data)
                     end
                 end
             end
-            buffedSea = buffedSea + 1 PrintText('Increased Naval AI Levels by ' .. buffedSea .. '!', 18, 'ffbfbfbf', 4, 'center')
+            buffedSea = buffedSea + 1
+            PrintText('Increased Naval AI Levels by ' .. buffedSea .. '!', 18, 'ffbfbfbf', 4, 'center')
         end
     end
 end
@@ -152,7 +160,8 @@ Callbacks.BuffAIsAir = function(data)
         if hum == 1 then
             for k, v in ArmyBrains do
                 if v.BrainType == 'AI' then
-                    local units = v:GetListOfUnits(categories.AIR - categories.UNSELECTABLE - categories.UNTARGETABLE - categories.INSIGNIFICANTUNIT, false)
+                    local units = v:GetListOfUnits(categories.AIR - categories.UNSELECTABLE - categories.UNTARGETABLE -
+                        categories.INSIGNIFICANTUNIT, false)
                     if table.getn(units) > 0 then
                         for i, unit in units do
                             unit:AddLevels(1)
@@ -160,7 +169,8 @@ Callbacks.BuffAIsAir = function(data)
                     end
                 end
             end
-            buffedAir = buffedAir + 1 PrintText('Increased Air AI Levels by ' .. buffedAir .. '!', 18, 'ffbfbfbf', 4, 'center')
+            buffedAir = buffedAir + 1
+            PrintText('Increased Air AI Levels by ' .. buffedAir .. '!', 18, 'ffbfbfbf', 4, 'center')
         end
     end
 end
@@ -175,7 +185,9 @@ Callbacks.BuildXPEnabled = function(data)
         end
         if hum == 1 then
             for k, v in ArmyBrains do
-                local units = v:GetListOfUnits(categories.CONSTRUCTION + categories.ENGINEER + categories.ENGINEER + categories.FACTORY + categories.SILO - categories.UNSELECTABLE - categories.UNTARGETABLE - categories.INSIGNIFICANTUNIT, false)
+                local units = v:GetListOfUnits(categories.CONSTRUCTION + categories.ENGINEER + categories.ENGINEER +
+                    categories.FACTORY + categories.SILO - categories.UNSELECTABLE - categories.UNTARGETABLE -
+                    categories.INSIGNIFICANTUNIT, false)
                 if table.getn(units) > 0 then
                     for i, unit in units do
                         unit:GetBlueprint().Economy.BuildXPLevelpSecond = data.enabled
@@ -221,7 +233,9 @@ Callbacks.AIVetBuildEnabled = function(data)
         if hum == 1 then
             for k, v in ArmyBrains do
                 if v.BrainType ~= 'Human' then
-                    local units = v:GetListOfUnits(categories.CONSTRUCTION + categories.ENGINEER + categories.ENGINEER + categories.FACTORY + categories.SILO - categories.UNSELECTABLE - categories.UNTARGETABLE - categories.INSIGNIFICANTUNIT, false)
+                    local units = v:GetListOfUnits(categories.CONSTRUCTION + categories.ENGINEER + categories.ENGINEER +
+                        categories.FACTORY + categories.SILO - categories.UNSELECTABLE - categories.UNTARGETABLE -
+                        categories.INSIGNIFICANTUNIT, false)
                     if table.getn(units) > 0 then
                         for i, unit in units do
                             unit.vetToggle = data.enabled
@@ -230,9 +244,11 @@ Callbacks.AIVetBuildEnabled = function(data)
                 end
             end
             if data.enabled ~= 0 then
-                ScenarioInfo.AItoggle = true PrintText('AI Veteranbuilding Enabled!', 18, 'ffbfbfbf', 4, 'center')
+                ScenarioInfo.AItoggle = true
+                PrintText('AI Veteranbuilding Enabled!', 18, 'ffbfbfbf', 4, 'center')
             else
-                ScenarioInfo.AItoggle = false PrintText('AI Veteranbuilding Disabled!', 18, 'ffbfbfbf', 4, 'center')
+                ScenarioInfo.AItoggle = false
+                PrintText('AI Veteranbuilding Disabled!', 18, 'ffbfbfbf', 4, 'center')
             end
         end
     end
@@ -349,12 +365,12 @@ Callbacks.jumpinjack = function(data)
                     color = 'FFFF0000'
                 end
                 local function Rings(self)
-                    for
-                    n = 1, 100 do
+                    for n = 1, 100 do
                         if not self or self:IsDead() then
                             return
                         end
-                        DrawCircle(self:GetPosition(), range, color) WaitSeconds(.1)
+                        DrawCircle(self:GetPosition(), range, color)
+                        WaitSeconds(.1)
                     end
                     self.rings:Destroy()
                     self.rings = nil
@@ -362,8 +378,7 @@ Callbacks.jumpinjack = function(data)
 
                 local ts = table.getsize(selectedJumpers)
                 if ts > 0 then
-                    for
-                    m = 1, ts do
+                    for m = 1, ts do
                         if not selectedJumpers[m] or selectedJumpers[m]:IsDead() then
                             --TODO: Fix continue
                             continue

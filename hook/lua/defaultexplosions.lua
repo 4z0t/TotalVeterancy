@@ -1,4 +1,6 @@
-function CreateFlash(obj, bone, scale, army) CreateLightParticle(obj, bone, army, GetRandomFloat(6, 10) * scale, GetRandomFloat(10.5, 14.5), 'glow_04', 'ramp_red_09')
+function CreateFlash(obj, bone, scale, army)
+    CreateLightParticle(obj, bone, army, GetRandomFloat(6, 10) * scale, GetRandomFloat(10.5, 14.5), 'glow_04',
+        'ramp_red_09')
 end
 
 function _CreateScalableUnitExplosion(obj)
@@ -27,7 +29,8 @@ function _CreateScalableUnitExplosion(obj)
         else
             EffectTable = BaseEffectTable
         end
-        CreateEffects(obj, army, EffectTable) CreateFlash(obj, -1, scale, army)
+        CreateEffects(obj, army, EffectTable)
+        CreateFlash(obj, -1, scale, army)
         if layer == 'Land' then
             if scale > 1.2 then
                 CreateScorchMarkDecal(obj, scale, army)
@@ -35,6 +38,8 @@ function _CreateScalableUnitExplosion(obj)
                 CreateScorchMarkSplat(obj, scale, army)
             end
         end
-        CreateDebrisProjectiles(obj, obj.Spec.BoundingXYZRadius, obj.Spec.Dimensions) obj:ShakeCamera(30 * scale, scale * ShakeMaxMul, 0, 0.5 + ShakeTimeModifier) obj:Destroy()
+        CreateDebrisProjectiles(obj, obj.Spec.BoundingXYZRadius, obj.Spec.Dimensions)
+        obj:ShakeCamera(30 * scale, scale * ShakeMaxMul, 0, 0.5 + ShakeTimeModifier)
+        obj:Destroy()
     end
- end
+end

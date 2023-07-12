@@ -1,6 +1,7 @@
 local oldStructureUnit = StructureUnit
 StructureUnit = Class(oldStructureUnit) {
-    OnStartBuild = function(self, unitBeingBuilt, order) oldStructureUnit.OnStartBuild(self, unitBeingBuilt, order)
+    OnStartBuild = function(self, unitBeingBuilt, order)
+        oldStructureUnit.OnStartBuild(self, unitBeingBuilt, order)
         if unitBeingBuilt:GetUnitId() == self:GetBlueprint().General.UpgradesTo and order == 'Upgrade' then
             self.upgrading = true
         else
@@ -14,16 +15,19 @@ StructureUnit = Class(oldStructureUnit) {
         oldStructureUnit.OnStopBeingBuilt(self, builder, layer)
     end,
     OnFailedToBeBuilt = function(self)
-        self.upgrading = nil oldStructureUnit.OnFailedToBeBuilt(self)
+        self.upgrading = nil
+        oldStructureUnit.OnFailedToBeBuilt(self)
     end,
     OnStopBuild = function(self, unitBuilding)
-        self.upgrading = nil oldStructureUnit.OnStopBuild(self, unitBuilding)
+        self.upgrading = nil
+        oldStructureUnit.OnStopBuild(self, unitBuilding)
     end,
 }
 local oldShieldStructureUnit = ShieldStructureUnit
 ShieldStructureUnit = Class(oldShieldStructureUnit) {
     UpgradingState = State(oldShieldStructureUnit.UpgradingState) {
-        Main = function(self) oldShieldStructureUnit.UpgradingState.Main(self)
+        Main = function(self)
+            oldShieldStructureUnit.UpgradingState.Main(self)
         end,
         OnStopBuild = function(self, unitBuilding)
             if unitBuilding:GetFractionComplete() == 1 then
@@ -31,7 +35,8 @@ ShieldStructureUnit = Class(oldShieldStructureUnit) {
             end
             oldShieldStructureUnit.UpgradingState.OnStopBuild(self, unitBuilding)
         end,
-        OnFailedToBuild = function(self) oldShieldStructureUnit.UpgradingState.OnFailedToBuild(self)
+        OnFailedToBuild = function(self)
+            oldShieldStructureUnit.UpgradingState.OnFailedToBuild(self)
         end,
     }
 }
@@ -43,16 +48,19 @@ MassCollectionUnit = Class(oldMassCollectionUnit) {
                 if self:GetResourceConsumed() ~= 1 then
                     local aiBrain = self:GetAIBrain()
                     if aiBrain and aiBrain:GetEconomyStored('ENERGY') <= 1 then
-                        self:SetProductionPerSecondMass(massProduction) self:SetConsumptionPerSecondMass(massConsumption)
+                        self:SetProductionPerSecondMass(massProduction)
+                        self:SetConsumptionPerSecondMass(massConsumption)
                     else
                         if self:GetResourceConsumed() ~= 0 then
-                            self:SetConsumptionPerSecondMass(massConsumption) self:SetProductionPerSecondMass(massProduction / self:GetResourceConsumed())
+                            self:SetConsumptionPerSecondMass(massConsumption)
+                            self:SetProductionPerSecondMass(massProduction / self:GetResourceConsumed())
                         else
                             self:SetProductionPerSecondMass(0)
                         end
                     end
                 else
-                    self:SetConsumptionPerSecondMass(massConsumption) self:SetProductionPerSecondMass(massProduction)
+                    self:SetConsumptionPerSecondMass(massConsumption)
+                    self:SetProductionPerSecondMass(massProduction)
                 end
             else
                 self:SetProductionPerSecondMass(massProduction)
