@@ -1,100 +1,4 @@
-local controls = import('/lua/ui/game/orders.lua').controls
-local jumpers = {}
-local form, tp = false, nil
-local heightx = 1
-local range = 'default'
-local function jump()
-    ConExecute('IssueCommand Stop')
-    local dot2 = import('/lua/ui/uimain.lua').RemoveOnMouseClickedFunc
-    SimCallback({
-        Func = 'jumpinjack',
-        Args = {
-            owner = GetFocusArmy(),
-            units = jumpers,
-            jumpto = GetMouseWorldPos(),
-            height = heightx,
-            formation = form,
-            range = range
-        }
-    })
-    ForkThread(function()
-        dot2(jump)
-    end)
-end
-
-local function JumpButtoncr()
-    local UIUtil = import('/lua/ui/uiutil.lua')
-    local Tooltip = import('/lua/ui/game/tooltip.lua')
-    local Lh = import('/lua/maui/layouthelpers.lua')
-    controls.bg.jb = UIUtil.CreateButtonStd(controls.bg, '/game/orders/stand-ground')
-    controls.bg.jb.Left:Set(function()
-        return controls.bg.Left() + 16
-    end)
-    controls.bg.jb.Bottom:Set(function()
-        return controls.bg.Top() + 10
-    end)
-    controls.bg.jb.OnClick = function(self, modifiers)
-        local dot = import('/lua/ui/uimain.lua').AddOnMouseClickedFunc
-        local dot2 = import('/lua/ui/uimain.lua').RemoveOnMouseClickedFunc
-        dot2()
-        range = false
-        local function cb()
-            SimCallback({
-                Func = 'jumpinjack',
-                Args = {
-                    owner = GetFocusArmy(),
-                    units = jumpers,
-                    jumpto = GetMouseWorldPos(),
-                    height = heightx,
-                    formation = form,
-                    range = range
-                }
-            })
-        end
-
-        --TODO FIX STUPID SHIT!
-        if modifiers.Right then
-            form = true
-        else
-            form = false
-        end
-        if modifiers.Shift then
-            heightx = 0.5
-        else
-            heightx = 1
-        end
-        if modifiers.Ctrl then
-            range = 'howlingfury'
-            cb()
-            return
-        end
-        if modifiers.Middle then
-            range = 'longrange'
-        end
-        if modifiers.Alt then
-            range = 'danceofdeath'
-            cb()
-            return
-        end
-        ConExecute('IssueCommand Stop')
-        ConExecute('StartCommandMode order RULEUCC_Move')
-        SimCallback({
-            Func = 'rangerings',
-            Args = {
-                owner = GetFocusArmy(),
-                units = jumpers,
-                range = range
-            }
-        })
-        dot(jump)
-    end
-    controls.bg.jb.Depth:Set(1000)
-    controls.bg.jb:EnableHitTest(true)
-    controls.bg.jb:Hide()
-    Tooltip.AddButtonTooltip(controls.bg.jb, 'Jump', 0.9)
-end
-
-local function mew(availableOrders, availableToggles, newSelection, run)
+local function mew(availableOrders, availableToggles, newSelection)
     if table.empty(newSelection) then
         return
     end
@@ -122,11 +26,11 @@ local function mew(availableOrders, availableToggles, newSelection, run)
     end
 end
 
-local run = true
+
 local oldSetAvailableOrders = SetAvailableOrders
 function SetAvailableOrders(availableOrders, availableToggles, newSelection)
     oldSetAvailableOrders(availableOrders, availableToggles, newSelection)
-    mew(availableOrders, availableToggles, newSelection, run)
+    mew(availableOrders, availableToggles, newSelection)
 end
 
 local function JumpButtonBehavior(self, modifiers)
@@ -170,8 +74,12 @@ end
 
 numSlots = 16
 firstAltSlot = 9
-defaultOrdersTable.JumpInJack = { helpText = "jump_in_jack", bitmapId = 'stand-ground', preferredSlot = 1,
-    behavior = JumpButtonBehavior }
+defaultOrdersTable.JumpInJack = {
+    helpText = "jump_in_jack",
+    bitmapId = 'stand-ground',
+    preferredSlot = 1,
+    behavior = JumpButtonBehavior
+}
 
 commonOrders.JumpInJack = true
 do
@@ -179,6 +87,10 @@ do
         if k == "JumpInJack" then
             continue
         end
-        data.preferredSlot = data.preferredSlot + 1
+        if commonOrders[k] then
+            data.preferredSlot = data.preferredSlot + 1
+        else
+            data.preferredSlot = data.preferredSlot + 2
+        end
     end
 end
