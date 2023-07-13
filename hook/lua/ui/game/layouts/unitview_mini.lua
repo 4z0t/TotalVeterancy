@@ -30,20 +30,3 @@ do
         LayoutHelpers.CenteredAbove(controls.XPText, controls.bg, 0)
     end
 end
-
-function PositionWindow()
-    local controls = import('/lua/ui/game/unitview.lua').controls
-    local consControl = import('/lua/ui/game/construction.lua').controls.constructionGroup
-    if consControl:IsHidden() then
-        LayoutHelpers.AtBottomIn(controls.bg, controls.parent)
-        controls.abilities.Bottom:Set(function()
-            return controls.bg.Bottom() - 24
-        end)
-    else
-        LayoutHelpers.AtBottomIn(controls.bg, controls.parent, 145)
-        controls.abilities.Bottom:Set(function()
-            return controls.bg.Bottom() - 42
-        end)
-    end
-    LayoutHelpers.AtLeftIn(controls.bg, controls.parent, 17)
-end

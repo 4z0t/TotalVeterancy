@@ -170,15 +170,13 @@ end
 
 numSlots = 16
 firstAltSlot = 9
-defaultOrdersTable.JumpInJack = { helpText = "jump_in_jack", bitmapId = 'stand-ground', preferredSlot = 8,
+defaultOrdersTable.JumpInJack = { helpText = "jump_in_jack", bitmapId = 'stand-ground', preferredSlot = 1,
     behavior = JumpButtonBehavior }
+
 commonOrders.JumpInJack = true
 do
-    local offsetOrders = {
-
-    }
     for k, data in defaultOrdersTable do
-        if commonOrders[k] then
+        if k == "JumpInJack" then
             continue
         end
         data.preferredSlot = data.preferredSlot + 1
