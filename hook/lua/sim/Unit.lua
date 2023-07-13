@@ -1,4 +1,7 @@
+local EntityCategoryContains = EntityCategoryContains
+
 --AR : AutoRevive
+
 local ScenarioInfo = ScenarioInfo
 local AutoReviveRedir1 = function(self, other, firingWeapon)
     if EntityCategoryContains(categories.PROJECTILE, other) and IsEnemy(self:GetArmy(), other:GetArmy()) then
@@ -337,9 +340,12 @@ local XPaward = function(self, instigator, type, overkillRatio)
 end
 
 local Buff = import('/lua/sim/buff.lua')
-local s = ScenarioInfo
+local ScenarioInfo = ScenarioInfo
+local XPGAINMult = tonumber(ScenarioInfo.Options.XPGainMult or '1.0') or 1
+LOG("XP Gain mult " .. XPGAINMult)
+
 local JumpingJackApeshit = function(self, to, height, RANGE)
-    if not s.ALLies then
+    if not ScenarioInfo.ALLies then
         if (EntityCategoryContains(categories.COMMAND, self) and self.LevelProgress < 31) then
             return
         end
@@ -474,7 +480,7 @@ local JumpingJackApeshit = function(self, to, height, RANGE)
         rng = a(dxf) + dyf + a(dzf)
     end
     local rnmax = 179
-    if not s.ALLies then
+    if not ScenarioInfo.ALLies then
         rnmax = 79
         rmax = 70
     end
@@ -498,7 +504,7 @@ local JumpingJackApeshit = function(self, to, height, RANGE)
     range = math.floor(range)
     rng = math.pow(rng, 0.85)
     local nrjj = nrj
-    local packedfun = { maprangecheck, a, ms, mr, lvcalc, dodc, bs, s, wpn, maxcost, id }
+    local packedfun = { maprangecheck, a, ms, mr, lvcalc, dodc, bs, ScenarioInfo, wpn, maxcost, id }
     local function Jump()
         if self:IsDead() then
             return
@@ -807,7 +813,8 @@ end
 
 local oldUnit = Unit
 Unit = Class(oldUnit) {
-    OnCreate = function(self) oldUnit.OnCreate(self)
+    OnCreate = function(self)
+        oldUnit.OnCreate(self)
         local bp = self:GetBlueprint()
         local brain = GetArmyBrain(self:GetArmy())
         if bp.Economy.XPperLevel then
@@ -818,14 +825,15 @@ Unit = Class(oldUnit) {
             self.Sync.LevelProgress = self.LevelProgress
             self.Sync.RegenRate = bp.Defense.RegenRate
             if EntityCategoryContains(categories.COMMAND, self) then
-                self.eco = ForkThread(function() WaitSeconds(1.8)
+                self.eco = ForkThread(function()
+                    WaitSeconds(1.8)
                     SetArmyEconomy(self:GetArmy(), 0, 5000)
                     self.eco:Destroy()
                     self.eco = nil
                 end)
                 self.Trash:Add(self.eco)
             end
-            if s.AItoggle and self.BuildXPLevelpSecond and brain.BrainType ~= "Human" then
+            if ScenarioInfo.AItoggle and self.BuildXPLevelpSecond and brain.BrainType ~= "Human" then
                 self.vetToggle = 4
             end
         end
@@ -885,7 +893,7 @@ Unit = Class(oldUnit) {
             local enhBp = self:GetBlueprint().Enhancements[work]
             local enhxp = math.pow(enhBp.BuildCostMass + enhBp.BuildCostEnergy * 0.1 + enhBp.BuildTime * 0.04, 0.5)
             local mult = self.LevelProgress - 0.9999
-            if s.ALLies == false then
+            if ScenarioInfo.ALLies == false then
                 mult = 0
                 if self.enhcnt then
                     self.enhcnt = self.enhcnt + 1
@@ -925,18 +933,18 @@ Unit = Class(oldUnit) {
         end
         local waittime = self:GetBlueprint().Economy.xpTimeStep * 0.5
         local step = 0.75
-        if s.ALLies == false then
+        if ScenarioInfo.ALLies == false then
             step = 0.34
         end
         WaitSeconds(waittime)
-        while not self:IsDead() and
-            (
-            self.MaintenanceConsumption or
-                EntityCategoryContains(categories.ENERGYPRODUCTION + categories.MASSSTORAGE + categories.ENERGYSTORAGE,
-                    self)) do self:AddXP(self.XPnextLevel * step) WaitSeconds(waittime)
+        while not self:IsDead() and (self.MaintenanceConsumption or
+            EntityCategoryContains(categories.ENERGYPRODUCTION + categories.MASSSTORAGE + categories.ENERGYSTORAGE,
+                self)) do
+            self:AddXP(self.XPnextLevel * step)
+            WaitSeconds(waittime)
         end
     end,
-    startBuildXPThread = function(self)
+    StartBuildXPThread = function(self)
         local levelPerSecond = self:GetBlueprint().Economy.BuildXPLevelpSecond
         if not levelPerSecond then
             return
@@ -963,16 +971,16 @@ Unit = Class(oldUnit) {
         end
     end,
     SetActiveConsumptionActive = function(self)
-        if s.ALLies ~= false then
+        if ScenarioInfo.ALLies ~= false then
             if self.BuildXPThread then
                 KillThread(self.BuildXPThread)
             end
-            self.BuildXPThread = ForkThread(self.startBuildXPThread, self)
+            self.BuildXPThread = ForkThread(self.StartBuildXPThread, self)
             self.Trash:Add(self.BuildXPThread)
         end
         oldUnit.SetActiveConsumptionActive(self)
     end,
-    startSiloXPThread = function(self)
+    StartSiloXPThread = function(self)
         local levelPerSecond = self:GetBlueprint().Economy.BuildXPLevelpSecond
         if not levelPerSecond then
             return
@@ -1008,7 +1016,7 @@ Unit = Class(oldUnit) {
         if self.SiloXPThread then
             KillThread(self.SiloXPThread)
         end
-        self.SiloXPThread = ForkThread(self.startSiloXPThread, self)
+        self.SiloXPThread = ForkThread(self.StartSiloXPThread, self)
         self.Trash:Add(self.SiloXPThread)
         oldUnit.OnSiloBuildStart(self, weapon)
     end,
@@ -1028,33 +1036,39 @@ Unit = Class(oldUnit) {
             end
         end
     end,
+
+    ---@param self Unit
     CheckVeteranLevel = function(self)
         if not self.XPnextLevel then
             return
         end
-        local bp = self:GetBlueprint()
+        local bpe = self.Blueprint.Economy
         while self.xp >= self.XPnextLevel do
             self.xp = self.xp - self.XPnextLevel
-            self.XPnextLevel = bp.Economy.XPperLevel * (1 + 0.1 * self.VeteranLevel)
+            self.XPnextLevel = bpe.XPperLevel * (1 + 0.1 * self.VeteranLevel)
             self:SetVeteranLevel(self.VeteranLevel + 1)
         end
         self.LevelProgress = self.xp / self.XPnextLevel + self.VeteranLevel
         self.Sync.LevelProgress = self.LevelProgress
     end,
+
+
+    ---@param self Unit
+    ---@param time any
     PlayVeteranFx = function(self, time)
         if self.disableSFX == true then
             return
         end
         time = time or 1
-        CreateAttachedEmitter(self, 0, self:GetArmy(),
-            '/effects/emitters/destruction_explosion_concussion_ring_01_emit.bp'):ScaleEmitter(time)
+        CreateAttachedEmitter(self, 0, self.Army, '/effects/emitters/destruction_explosion_concussion_ring_01_emit.bp')
+            :ScaleEmitter(time)
     end,
     SetVeteranLevel = function(self, level)
         local bapb = Buff.ApplyBuff
         local mod = math.mod
         self.VeteranLevel = level
-        local buffTypes = { 'Health', 'Regen', 'Vision', 'Damage', 'DamageArea', 'Range', 'RateOfFire', 'Speed',
-            'BuildRate', 'Radar', 'Sonar', 'OmniRadius', 'ResourceProduction', 'Shield' }
+        -- local buffTypes = { 'Health', 'Regen', 'Vision', 'Damage', 'DamageArea', 'Range', 'RateOfFire', 'Speed',
+        --     'BuildRate', 'Radar', 'Sonar', 'OmniRadius', 'ResourceProduction', 'Shield' }
         bapb(self, 'VeterancyHealthRegen')
         bapb(self, 'VeterancyVision')
         local bp = self:GetBlueprint()
@@ -1144,7 +1158,7 @@ Unit = Class(oldUnit) {
                     if brain.BrainType == "Human" then
                         local revive = self.Revive or 0
                         local revadd = 1
-                        if self.Revive > 2 and s.ALLies == false then
+                        if self.Revive > 2 and ScenarioInfo.ALLies == false then
                             revadd = 0
                         end
                         self.Revive = revive + revadd
@@ -1198,20 +1212,13 @@ Unit = Class(oldUnit) {
         end
         if not Buffs[buffName] then
             BuffBlueprint {
-                MinLevel =
-                buffMinLevel,
-                MaxLevel =
-                buffMaxLevel,
-                Name =
-                buffName,
-                DisplayName =
-                buffName,
-                BuffType =
-                buffType,
-                Stacks =
-                buffValues.Stacks,
-                Duration =
-                buffValues.Duration,
+                MinLevel = buffMinLevel,
+                MaxLevel = buffMaxLevel,
+                Name = buffName,
+                DisplayName = buffName,
+                BuffType = buffType,
+                Stacks = buffValues.Stacks,
+                Duration = buffValues.Duration,
                 Affects = buffValues.Affects,
             }
         end
@@ -1257,8 +1264,7 @@ Unit = Class(oldUnit) {
         if amount <= 0 then
             return
         end
-        local brain = GetArmyBrain(self:GetArmy())
-        self.xp = self.xp + (amount)
+        self.xp = self.xp + amount * XPGAINMult
         self:CheckVeteranLevel()
     end,
     OnKilled = function(self, instigator, type, overkillRatio)
@@ -1306,7 +1312,7 @@ Unit = Class(oldUnit) {
             self.TeleportCybranSphere = nil -- this fixes some "...Game object has been destroyed" bugs in EffectUtilities.lua:TeleportChargingProgress
         end
 
-        if not s.Allies then
+        if not ScenarioInfo.Allies then
             if EntityCategoryContains(categories.COMMAND, self) then
                 if (time - self.VeteranLevel * 0.2) > 6 then
                     time = time - (self.VeteranLevel * 0.2)
