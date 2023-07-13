@@ -97,8 +97,7 @@ URL0301 = Class(oldURL0301) {
                     Duration = -1,
                     Affects = {
                         Damage = {
-                            Add =
-                            bp.NewDamageMod,
+                            Add = bp.NewDamageMod,
                             ByName = {
                                 RightDisintegrator = true,
                             },
