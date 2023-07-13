@@ -32,7 +32,7 @@ URL0001 = Class(oldURL0001) {
         elseif enh == 'CloakingGenerator' then
             self.StealthEnh = false
             self.CloakEnh = true
-            self:EnableUnitIntel('Cloak')
+            self:EnableUnitIntel('Enhancement', 'Cloak')
             if not Buffs['CybranACUCloakBonus'] then
                 BuffBlueprint {
                     Name = 'CybranACUCloakBonus',
