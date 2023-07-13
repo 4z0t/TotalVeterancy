@@ -276,7 +276,7 @@ Callbacks.ToggleBalance = function(data)
 end
 Callbacks.jumpinjack = function(data, units)
     if OkayToMessWithArmy(data.owner) and data.owner ~= -1 then
-        if table.empty(units) then
+        if table.empty(units) or ScenarioInfo.Options.IsJumpEnabled ~= "true" then
             return
         end
 
