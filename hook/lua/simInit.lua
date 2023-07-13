@@ -36,6 +36,43 @@ local function CheckAlliances()
     return true
 end
 
+local _SetupSession = SetupSession
+function SetupSession()
+    _SetupSession()
+    do
+        local function IsEnabled(name)
+            return ScenarioInfo.Options[name] == "true"
+        end
+
+        local VetBuffs = {
+            'VeterancyHealthRegen',
+            'VeterancyStorageBuff',
+            'VeterancyDamageRoF',
+            'VeterancyDamageArea',
+            'VeterancyRange',
+            'VeterancySpeed',
+            'VeterancyFuel',
+            'VeterancyShield',
+            'VeterancyVision',
+            'VeterancyOmniRadius',
+            'VeterancyRadar',
+            'VeterancySonar',
+            'VeterancyBuildRate',
+            'VeterancyResourceProduction',
+            'VeterancyCommandProduction',
+            'VeterancySpeed2',
+        }
+        for _, buff in VetBuffs do
+            if not IsEnabled(buff) then
+                Buffs[buff].Affects = {}
+                LOG("Veterancy buff " .. buff .. " Disabled")
+            else
+                LOG("Veterancy buff " .. buff .. " Enabled")
+            end
+        end
+    end
+end
+
 local oldBeginSession = BeginSession
 function BeginSession()
     local s = ScenarioInfo

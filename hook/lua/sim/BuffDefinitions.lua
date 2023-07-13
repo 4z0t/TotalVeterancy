@@ -1,5 +1,8 @@
 import('/lua/sim/AdjacencyBuffs.lua')
 import('/lua/sim/CheatBuffs.lua')
+
+
+
 BuffBlueprint {
     Name = 'VeterancyHealthRegen',
     DisplayName = 'VeterancyHealthRegen',
@@ -8,9 +11,15 @@ BuffBlueprint {
     Duration = -1,
     Affects = {
         MaxHealth = {
-            Mult = 1.1, },
+            Mult = 1.1,
+        },
         Regen = {
-            Mult = 1.1000001, }, }, }
+            Mult = 1.1000001,
+        },
+    },
+}
+
+
 BuffBlueprint {
     Name = 'VeterancyDamageRoF',
     DisplayName = 'VeterancyDamageRoF',
@@ -22,6 +31,8 @@ BuffBlueprint {
             Mult = 1.1000001, },
         RateOfFireBuf = {
             Mult = 1.0100001, }, }, }
+
+
 BuffBlueprint {
     MaxLevel = 20,
     Name = 'VeterancyDamageArea',

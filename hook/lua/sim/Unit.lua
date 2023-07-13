@@ -1,33 +1,5 @@
-local mstbuff = Buffs.VeterancyStorageBuff.Affects.MassStorageBuf.Mult - 1
-local estbuff = Buffs.VeterancyStorageBuff.Affects.EnergyStorageBuf.Mult - 1
-local s = ScenarioInfo
-
-SyncMeta = {
-    __index = function(t, key)
-        local id = rawget(t, 'id')
-        return UnitData[id].Data[key]
-    end,
-    __newindex = function(t, key, val)
-        local id = rawget(t, 'id')
-        local army = rawget(t, 'army')
-        if not UnitData[id] then
-            UnitData[id] = {
-                OwnerArmy = rawget(t, 'army'),
-                Data = {}
-            }
-        end
-        UnitData[id].Data[key] = val
-        if army == GetFocusArmy() or GetFocusArmy() == -1 then
-            if not Sync.UnitData[id] then
-                Sync.UnitData[id] = {}
-            end
-            Sync.UnitData[id][key] = val
-        end
-    end,
-}
-
 --AR : AutoRevive
-local s = ScenarioInfo
+local ScenarioInfo = ScenarioInfo
 local AutoReviveRedir1 = function(self, other, firingWeapon)
     if EntityCategoryContains(categories.PROJECTILE, other) and IsEnemy(self:GetArmy(), other:GetArmy()) then
         if not other.red then
@@ -193,7 +165,7 @@ local AutoRevive = function(self, instigator, type, overkillRatio)
             end
         end
         local lvl = math.floor(self.VeteranLevel) - 10
-        if s.ALLies == false then
+        if ScenarioInfo.ALLies == false then
             local cost = bp.Economy
             local massx, energyx = (-cost.BuildCostMass * lvl * 0.1), (-cost.BuildCostEnergy * lvl * .1)
             SetArmyEconomy(revivee:GetArmy(), massx, energyx)
@@ -244,16 +216,16 @@ local AutoRevive = function(self, instigator, type, overkillRatio)
             if timer > 1490 then
                 redc = ard3
             end
-            if s.ALLies == false then
+            if ScenarioInfo.ALLies == false then
                 redc = prd1
             end
             revivee.Vetredirector.OnCollisionCheck = redc
-            if s.ALLies == false then
+            if ScenarioInfo.ALLies == false then
                 revivee.Vetredirector:SetCollisionShape('Box', 0, 0, 0, 12, 200, 12)
             end
             if timer > 600 then
                 timer = 600
-                if s.ALLies == false then
+                if ScenarioInfo.ALLies == false then
                     timer = 200
                 end
             end
@@ -288,7 +260,7 @@ local AutoRevive = function(self, instigator, type, overkillRatio)
                 clfx(revivee.rf)
                 local rfx = { '_test_swirl_01' }
                 vfx(rfx, revivee.rf)
-                if s.ALLies == false then
+                if ScenarioInfo.ALLies == false then
                     redir2 = 2
                 end
                 for i = redir2, 1, -1 do
@@ -310,8 +282,8 @@ local AutoRevive = function(self, instigator, type, overkillRatio)
 end
 
 
-local mstbuff = Buffs.VeterancyStorageBuff.Affects.MassStorageBuf.Mult - 1
-local estbuff = Buffs.VeterancyStorageBuff.Affects.EnergyStorageBuf.Mult - 1
+local mstbuff = Buffs.VeterancyStorageBuff.Affects.MassStorageBuf.Mult or 1 - 1
+local estbuff = Buffs.VeterancyStorageBuff.Affects.EnergyStorageBuf.Mult or 1 - 1
 local s = ScenarioInfo
 local StorageBuffs = function(self, instigator, type, overkillRatio)
     local bp = self:GetBlueprint()
