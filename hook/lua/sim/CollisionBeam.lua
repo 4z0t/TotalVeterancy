@@ -1,7 +1,8 @@
 local oldCollisionBeam = CollisionBeam
 CollisionBeam = Class(oldCollisionBeam) {
-    OnImpact = function(self, impactType, targetEntity) self:SetDamageTable() oldCollisionBeam.OnImpact(self, impactType
-        , targetEntity)
+    OnImpact = function(self, impactType, targetEntity)
+        self:SetDamageTable()
+        oldCollisionBeam.OnImpact(self, impactType, targetEntity)
     end,
     SetDamageTable = function(self)
         self.DamageTable = self.Weapon:GetDamageTable()
