@@ -42,30 +42,43 @@ ShieldStructureUnit = Class(oldShieldStructureUnit) {
 }
 local oldMassCollectionUnit = MassCollectionUnit
 MassCollectionUnit = Class(oldMassCollectionUnit) {
-    WatchUpgradeConsumption = function(self, massConsumption, massProduction)
-        while true do
-            if not self:IsPaused() then
-                if self:GetResourceConsumed() ~= 1 then
-                    local aiBrain = self:GetAIBrain()
-                    if aiBrain and aiBrain:GetEconomyStored('ENERGY') <= 1 then
-                        self:SetProductionPerSecondMass(massProduction)
-                        self:SetConsumptionPerSecondMass(massConsumption)
-                    else
-                        if self:GetResourceConsumed() ~= 0 then
-                            self:SetConsumptionPerSecondMass(massConsumption)
-                            self:SetProductionPerSecondMass(massProduction / self:GetResourceConsumed())
-                        else
-                            self:SetProductionPerSecondMass(0)
-                        end
-                    end
-                else
-                    self:SetConsumptionPerSecondMass(massConsumption)
-                    self:SetProductionPerSecondMass(massProduction)
-                end
-            else
-                self:SetProductionPerSecondMass(massProduction)
+    WatchUpgradeConsumption = function(self)
+
+        local bp = self.Blueprint
+        local massConsumption = self:GetConsumptionPerSecondMass()
+
+        local aiBrain = self:GetAIBrain()
+
+        local CalcEnergyFraction = function()
+            local fraction = 1
+            if aiBrain:GetEconomyStored('ENERGY') < self:GetConsumptionPerSecondEnergy() then
+                fraction = math.min(1, aiBrain:GetEconomyIncome('ENERGY') / aiBrain:GetEconomyRequested('ENERGY'))
             end
-            WaitSeconds(0.2)
+            return fraction
+        end
+
+        local CalcMassFraction = function()
+            local fraction = 1
+            if aiBrain:GetEconomyStored('MASS') < self:GetConsumptionPerSecondMass() then
+                fraction = math.min(1, aiBrain:GetEconomyIncome('MASS') / aiBrain:GetEconomyRequested('MASS'))
+            end
+            return fraction
+        end
+
+        while not self.Dead do
+            local massProduction = bp.Economy.ProductionPerSecondMass * (self.MassProdAdjMod or 1)
+            if self:IsPaused() then
+                self:SetConsumptionPerSecondMass(0)
+                self:SetProductionPerSecondMass(massProduction * CalcEnergyFraction())
+            elseif aiBrain and aiBrain:GetEconomyStored('ENERGY') <= 1 then
+                self:SetConsumptionPerSecondMass(massConsumption)
+                self:SetProductionPerSecondMass(massProduction / CalcMassFraction())
+            else
+                self:SetConsumptionPerSecondMass(massConsumption)
+                self:SetProductionPerSecondMass(massProduction * CalcEnergyFraction())
+            end
+
+            WaitTicks(1)
         end
     end,
 }
@@ -80,7 +93,8 @@ RadarUnit = Class(oldRadarUnit) {
             end
             oldRadarUnit.UpgradingState.OnStopBuild(self, unitBuilding)
         end,
-        OnFailedToBuild = function(self) oldRadarUnit.UpgradingState.OnFailedToBuild(self)
+        OnFailedToBuild = function(self)
+            oldRadarUnit.UpgradingState.OnFailedToBuild(self)
         end,
     }
 }
