@@ -90,7 +90,8 @@ BuffBlueprint {
     Duration = -1,
     Affects = {
         ShieldHP = {
-            Mult = 1.1, },
+            Mult = 1.1, 
+        },
         ShieldRegen = {
             Mult = 1.100001,
         },

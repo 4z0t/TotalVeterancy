@@ -431,20 +431,26 @@ local JumpingJackApeshit = function(self, to, height, RANGE)
             hbff = howftb[faction][utype]
         end
         BuffBlueprint {
-            Name = 'HowlingFury' ..
-                faction, DisplayName = 'HowlingFury' ..
-                faction, BuffType = 'HowlingFury..faction',
+            Name = 'HowlingFury' .. faction,
+            DisplayName = 'HowlingFury' .. faction,
+            BuffType = 'HowlingFury..faction',
             Stacks = 'ALWAYS',
             Duration = -1,
             Affects = {
                 Damage = {
-                    Mult = hbff.dmg, },
+                    Mult = hbff.dmg,
+                },
                 RateOfFireBuf = {
-                    Mult = hbff.RoF, },
+                    Mult = hbff.RoF,
+                },
                 DamageRadius = {
-                    Add = hbff.AoE, },
+                    Add = hbff.AoE,
+                },
                 MaxRadius = {
-                    Add = hbff.RNG, }, }, }
+                    Add = hbff.RNG,
+                },
+            },
+        }
     end
     if RANGE == 'danceofdeath' then
         targ = wpn:GetCurrentTarget()
