@@ -81,7 +81,7 @@ Shield = Class(oldShield) {
         end,
     },
     XPonDamagedThread = function(self)
-        while self and self.Owner:IsDead() ~= true do
+        while self and not self.Owner:IsDead() do
             if self:GetHealth() < self:GetMaxHealth() then
                 self.Owner:AddXP(self.Owner.XPnextLevel * 0.1)
             end
@@ -116,7 +116,7 @@ PersonalBubble = ClassShield(Shield) {
         -- Was handled by self.PassOverkillDamage bp value, now defunct
         if self.Owner ~= instigator then
             local overkill = self:GetOverkill(instigator, amount, dmgType)
-            if overkill > 0 and self.Owner and IsUnit(self.Owner)  then
+            if overkill > 0 and self.Owner and IsUnit(self.Owner) then
                 self.Owner:DoTakeDamage(instigator, overkill, vector, dmgType)
             end
         end
@@ -157,7 +157,7 @@ PersonalBubble = ClassShield(Shield) {
         Main = function(self)
             UnitRevertCollisionShape(self.Owner)
             Shield.RechargeState.Main(self)
-         end
+        end
     },
 }
 
@@ -195,7 +195,7 @@ TransportShield = ClassShield(Shield) {
 
             -- prevent ourself and our content from taking damage
             self:SetContentsVulnerable(false)
-            self.Owner.CanTakeDamage = false 
+            self.Owner.CanTakeDamage = false
         end,
 
         AddProtectedUnit = function(self, unit)
@@ -210,7 +210,7 @@ TransportShield = ClassShield(Shield) {
 
             -- allow ourself and our content to take damage
             self:SetContentsVulnerable(true)
-            self.Owner.CanTakeDamage = true 
+            self.Owner.CanTakeDamage = true
         end,
     },
 
@@ -220,7 +220,7 @@ TransportShield = ClassShield(Shield) {
 
             -- allow ourself and our content to take damage
             self:SetContentsVulnerable(true)
-            self.Owner.CanTakeDamage = true 
+            self.Owner.CanTakeDamage = true
         end
     },
 
@@ -230,7 +230,7 @@ TransportShield = ClassShield(Shield) {
 
             -- allow ourself and our content to take damage
             self:SetContentsVulnerable(true)
-            self.Owner.CanTakeDamage = true 
+            self.Owner.CanTakeDamage = true
         end
     },
 }
@@ -238,7 +238,7 @@ TransportShield = ClassShield(Shield) {
 --- A shield that sticks to the surface of the unit. Doesn't have its own collision physics, just
 -- grants extra health.
 ---@class PersonalShield : Shield
-PersonalShield = ClassShield(Shield){
+PersonalShield = ClassShield(Shield) {
 
     RemainEnabledWhenAttached = true,
 
@@ -258,7 +258,7 @@ PersonalShield = ClassShield(Shield){
         self.ShieldType = 'Personal'
 
         -- cache our shield effect entity
-        self.ShieldEffectEntity = Entity( self.ImpactEntitySpecs )
+        self.ShieldEffectEntity = Entity(self.ImpactEntitySpecs)
     end,
 
     ApplyDamage = function(self, instigator, amount, vector, dmgType, doOverspill)
@@ -300,7 +300,7 @@ PersonalShield = ClassShield(Shield){
         -- warp the entity
         vc[1], vc[2], vc[3] = EntityGetPositionXYZ(self)
         Warp(entity, vc)
-        
+
         -- orientate it to orientate the effect
         vc[1], vc[2], vc[3] = -x, -y, -z
         EntitySetOrientation(entity, OrientFromDir(vc), true)
@@ -412,7 +412,7 @@ CzarShield = ClassShield(PersonalShield) {
 
         local army = self:GetArmy()
         local OffsetLength = Util.GetVectorLength(vector)
-        local ImpactMesh = Entity ( self.ImpactEntitySpecs )
+        local ImpactMesh = Entity(self.ImpactEntitySpecs)
         local pos = self:GetPosition()
 
         -- Shield has non-standard form (ellipsoid) and no collision, so we need some magic to make impacts look good
@@ -420,19 +420,19 @@ CzarShield = ClassShield(PersonalShield) {
         -- Projectiles that come from same elevation (ASF etc.) cause small pulses on the edge of shield using
         -- standard effect from static shields
         if vector.y > 1 then
-            Warp(ImpactMesh, {pos[1], pos[2] + 9.5, pos[3]})
+            Warp(ImpactMesh, { pos[1], pos[2] + 9.5, pos[3] })
 
             ImpactMesh:SetMesh(self.ImpactMeshBigBp)
             ImpactMesh:SetDrawScale(self.Size)
             ImpactMesh:SetOrientation(OrientFromDir(Vector(0, -30, 0)), true)
         elseif vector.y < -1 then
-            Warp(ImpactMesh, {pos[1], pos[2] - 9.5, pos[3]})
+            Warp(ImpactMesh, { pos[1], pos[2] - 9.5, pos[3] })
 
             ImpactMesh:SetMesh(self.ImpactMeshBigBp)
             ImpactMesh:SetDrawScale(self.Size)
             ImpactMesh:SetOrientation(OrientFromDir(Vector(0, 30, 0)), true)
         else
-            Warp(ImpactMesh, {pos[1], pos[2], pos[3]})
+            Warp(ImpactMesh, { pos[1], pos[2], pos[3] })
 
             ImpactMesh:SetMesh(self.ImpactMeshBp)
             ImpactMesh:SetDrawScale(self.Size)
