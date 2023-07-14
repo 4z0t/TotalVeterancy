@@ -631,7 +631,9 @@ local JumpingJackApeshit = function(self, to, height, RANGE)
             self:SetOrientation(ps, true)
         end
 
-        local function Busy(bool) self:SetImmobile(bool) self:SetBusy(bool)
+        local function Busy(bool)
+            self:SetImmobile(bool)
+            self:SetBusy(bool)
         end
 
         Busy(true)
@@ -1281,6 +1283,11 @@ Unit = Class(oldUnit) {
         oldUnit.CreatePersonalShield(self, shieldSpec)
         Buff.BuffAffectUnit(self, 'VeterancyShield', self, true)
     end,
+    ---comment
+    ---@param self Unit
+    ---@param teleporter any
+    ---@param location any
+    ---@param orientation any
     InitiateTeleportThread = function(self, teleporter, location, orientation)
         self.UnitBeingTeleported = self
         self:SetImmobile(true)

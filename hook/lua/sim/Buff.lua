@@ -477,172 +477,48 @@ function ApplyBuff(unit, buffName, instigator)
             end
         end
     end
-    if def.Duration
-        and
-        def.Duration
-        > 0 then
-        local thread = ForkThread(BuffWorkThread
-            ,
-            unit
-            ,
-            buffName
-            ,
-            instigator)
-        unit
-            .Trash
-            :
-            Add(thread)
-        data
-            .Trash
-            :
-            Add(thread)
+    if def.Duration and def.Duration > 0 then
+        local thread = ForkThread(BuffWorkThread, unit, buffName, instigator)
+        unit.Trash:Add(thread)
+        data.Trash:Add(thread)
     end
-    PlayBuffEffect(unit
-        ,
-        buffName
-        ,
-        data
-        .Trash)
-    ubt[
-        def.BuffType
-        ][
-        buffName
-        ] = data
+    PlayBuffEffect(unit, buffName, data.Trash)
+    ubt[def.BuffType][buffName] = data
     if def.OnApplyBuff then
-        def:
-            OnApplyBuff(unit
-                ,
-                instigator)
+        def:OnApplyBuff(unit, instigator)
     end
-    BuffAffectUnit(unit
-        ,
-        buffName
-        ,
-        instigator
-        ,
-        false)
+    BuffAffectUnit(unit, buffName, instigator, false)
 end
 
 local copy = table.copy
 local removeByValue = table.removeByValue
 
-function RemoveBuff(unit, buffName, removeAllCounts
-                    ,
-                    instigator)
-    local def = Buffs
-        [
-        buffName
-        ]
-    local unitBuff = unit
-        .Buffs
-        .BuffTable
-        [
-        def.BuffType
-        ][
-        buffName
-        ]
-    for atype, _ in def
-        .Affects do
-        local list = unit
-            .Buffs
-            .Affects
-            [
-            atype
-            ]
-        if list
-            and
-            list
-            [
-            buffName
-            ] then
+function RemoveBuff(unit, buffName, removeAllCounts, instigator)
+    local def = Buffs[buffName]
+    local unitBuff = unit.Buffs.BuffTable[def.BuffType][buffName]
+    for atype, _ in def.Affects do
+        local list = unit.Buffs.Affects[atype]
+        if list and list[buffName] then
             if removeAllCounts then
-                list
-                    [
-                    buffName
-                    ]
-                    .Count = list
-                    [
-                    buffName
-                    ]
-                    .Count
-                    -
-                    unitBuff
-                    .Count
+                list[buffName].Count = list[buffName].Count - unitBuff.Count
             else
-                list
-                    [
-                    buffName
-                    ]
-                    .Count = list
-                    [
-                    buffName
-                    ]
-                    .Count
-                    -
-                    1
+                list[buffName].Count = list[buffName].Count - 1
             end
-            if list
-                [
-                buffName
-                ]
-                .Count
-                <=
-                0 then
-                list
-                    [
-                    buffName
-                    ] = nil
+            if list[buffName].Count <= 0 then
+                list[buffName] = nil
             end
         end
     end
-    if not
-        unitBuff
-        .Count then
-        local stg = "*WARNING: BUFF: unitBuff.Count is nil. Unit: "
-            ..
-            unit
-            :
-            GetUnitId()
-            ..
-            " Buff Name: "
-            ..
-            buffName
-            ..
-            " Unit BuffTable: "
-            ,
-            repr(unitBuff)
-        LOG('***ERROR.please.fix.me: '
-            ..
-            GetGameTimeSeconds()
-            ..
-            's '
-            ..
-            stg)
+    if not unitBuff.Count then
+        local stg = "*WARNING: BUFF: unitBuff.Count is nil. Unit: " ..
+            unit:GetUnitId() .. " Buff Name: " .. buffName .. " Unit BuffTable: ", repr(unitBuff)
+        LOG('***ERROR.please.fix.me: ' .. GetGameTimeSeconds() .. 's ' .. stg)
         return
     end
-    unitBuff
-        .Count = unitBuff
-        .Count
-        - 1
-    if removeAllCounts
-        or
-        unitBuff
-        .Count
-        <= 0 then
-        unitBuff
-            .Trash
-            :
-            Destroy()
-        unit
-            .Buffs
-            .BuffTable
-            [
-            def
-                .BuffType
-            ]
-            [
-            buffName
-            ] = nil
+    unitBuff.Count = unitBuff.Count - 1
+    if removeAllCounts or unitBuff.Count <= 0 then
+        unitBuff.Trash:Destroy()
+        unit.Buffs.BuffTable[def.BuffType][buffName] = nil
     end
     if def.OnBuffRemove then
         def:OnBuffRemove(unit, instigator)

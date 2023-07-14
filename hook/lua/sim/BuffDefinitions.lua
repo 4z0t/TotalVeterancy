@@ -1,8 +1,6 @@
 import('/lua/sim/AdjacencyBuffs.lua')
 import('/lua/sim/CheatBuffs.lua')
 
-
-
 BuffBlueprint {
     Name = 'VeterancyHealthRegen',
     DisplayName = 'VeterancyHealthRegen',
@@ -18,8 +16,6 @@ BuffBlueprint {
         },
     },
 }
-
-
 BuffBlueprint {
     Name = 'VeterancyDamageRoF',
     DisplayName = 'VeterancyDamageRoF',
@@ -28,11 +24,13 @@ BuffBlueprint {
     Duration = -1,
     Affects = {
         Damage = {
-            Mult = 1.1000001, },
+            Mult = 1.1000001,
+        },
         RateOfFireBuf = {
-            Mult = 1.0100001, }, }, }
-
-
+            Mult = 1.0100001,
+        },
+    },
+}
 BuffBlueprint {
     MaxLevel = 20,
     Name = 'VeterancyDamageArea',
@@ -42,7 +40,10 @@ BuffBlueprint {
     Duration = -1,
     Affects = {
         DamageRadius = {
-            Mult = 1.0500001, }, }, }
+            Mult = 1.0500001,
+        },
+    },
+}
 BuffBlueprint {
     MaxLevel = 100,
     Name = 'VeterancyRange',
@@ -52,7 +53,10 @@ BuffBlueprint {
     Duration = -1,
     Affects = {
         MaxRadius = {
-            Mult = 1.0100001, }, }, }
+            Mult = 1.0100001,
+        },
+    },
+}
 BuffBlueprint {
     MaxLevel = 100,
     Name = 'VeterancySpeed',
@@ -62,7 +66,10 @@ BuffBlueprint {
     Duration = -1,
     Affects = {
         MoveMult = {
-            Mult = 1.0100001, }, }, }
+            Mult = 1.0100001,
+        },
+    },
+}
 BuffBlueprint {
     Name = 'VeterancyFuel',
     DisplayName = 'VeterancyFuel',
@@ -71,7 +78,10 @@ BuffBlueprint {
     Duration = -1,
     Affects = {
         Fuel = {
-            Mult = 1.0500001, }, }, }
+            Mult = 1.0500001,
+        },
+    },
+}
 BuffBlueprint {
     Name = 'VeterancyShield',
     DisplayName = 'VeterancyShield',
@@ -82,7 +92,10 @@ BuffBlueprint {
         ShieldHP = {
             Mult = 1.1, },
         ShieldRegen = {
-            Mult = 1.100001, }, }, }
+            Mult = 1.100001,
+        },
+    },
+}
 BuffBlueprint {
     MaxLevel = 40,
     Name = 'VeterancyVision',
@@ -92,7 +105,10 @@ BuffBlueprint {
     Duration = -1,
     Affects = {
         VisionRadius = {
-            Mult = 1.02500001, }, }, }
+            Mult = 1.02500001,
+        },
+    },
+}
 BuffBlueprint {
     MaxLevel = 40,
     Name = 'VeterancyOmniRadius',
@@ -102,7 +118,10 @@ BuffBlueprint {
     Duration = -1,
     Affects = {
         OmniRadius = {
-            Mult = 1.02500001, }, }, }
+            Mult = 1.02500001,
+        },
+    },
+}
 BuffBlueprint {
     MaxLevel = 40,
     Name = 'VeterancyRadar',
@@ -112,7 +131,10 @@ BuffBlueprint {
     Duration = -1,
     Affects = {
         RadarRadius = {
-            Mult = 1.02500001, }, }, }
+            Mult = 1.02500001,
+        },
+    },
+}
 BuffBlueprint {
     MaxLevel = 40,
     Name = 'VeterancySonar',
@@ -122,7 +144,10 @@ BuffBlueprint {
     Duration = -1,
     Affects = {
         SonarRadius = {
-            Mult = 1.02500001, }, }, }
+            Mult = 1.02500001,
+        },
+    },
+}
 BuffBlueprint {
     Name = 'VeterancyBuildRate',
     DisplayName = 'VeterancyBuildRate',
@@ -131,7 +156,10 @@ BuffBlueprint {
     Duration = -1,
     Affects = {
         BuildRate = {
-            Mult = 1.100001, }, }, }
+            Mult = 1.100001,
+        },
+    },
+}
 BuffBlueprint {
     Name = 'VeterancyResourceProduction',
     DisplayName = 'VeterancyResourceProduction',
@@ -140,9 +168,13 @@ BuffBlueprint {
     Duration = -1,
     Affects = {
         EnergyProductionBuf = {
-            Mult = 1.200001, },
+            Mult = 1.200001,
+        },
         MassProductionBuf = {
-            Mult = 1.1000001, }, }, }
+            Mult = 1.1000001,
+        },
+    },
+}
 BuffBlueprint {
     Name = 'VeterancyCommandProduction',
     DisplayName = 'VeterancyCommandProduction',
@@ -152,9 +184,13 @@ BuffBlueprint {
     MaxLevel = 20,
     Affects = {
         EnergyProductionBuf = {
-            Add = 50, },
+            Add = 50,
+        },
         MassProductionBuf = {
-            Add = 0.5, }, }, }
+            Add = 0.5,
+        },
+    },
+}
 BuffBlueprint {
     MinLevel = 40,
     MaxLevel = 940,
@@ -165,7 +201,10 @@ BuffBlueprint {
     Duration = -1,
     Affects = {
         MoveMult = {
-            Mult = 1.0100001, }, }, }
+            Mult = 1.0100001,
+        },
+    },
+}
 BuffBlueprint {
     Name = 'VeterancyStorageBuff',
     DisplayName = 'VeterancyStorageBuff',
@@ -174,7 +213,11 @@ BuffBlueprint {
     Duration = -1,
     Affects = {
         EnergyStorageBuf = {
-            Mult = 1.4000001, },
+            Mult = 1.4000001,
+        },
         MassStorageBuf = {
-            Mult = 1.4000001, }, }, }
+            Mult = 1.4000001,
+        },
+    },
+}
 __moduleinfo.auto_reload = true
