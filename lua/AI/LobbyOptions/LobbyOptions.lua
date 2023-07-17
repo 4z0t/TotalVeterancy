@@ -34,7 +34,7 @@ do
             DamageRadius = { 5, 100, 5 },
         },
         ['VeterancyRange'] = {
-            MaxRadius = { 10, 100, 10 },
+            MaxRadius = { 1, 10, 1 },
         },
         ['VeterancySpeed'] = {
             MoveMult = { 1, 10, 1 },
