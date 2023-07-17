@@ -78,7 +78,26 @@ do
             default = 2,
             label = "=====Total Veterancy=====",
             help = "Total Veterancy options section",
-            key = "",
+            key = "=====Total Veterancy=====",
+            values = {
+                {
+                    text = "<LOC _Off>Off",
+                    help = "Disabled",
+                    key = 'false',
+                },
+                {
+                    text = "<LOC _On>On",
+                    help = "Enabled",
+                    key = 'true',
+                },
+            },
+        })
+    TableInsert(AIOpts,
+        {
+            default = 2,
+            label = "Auto Revive",
+            help = "Enables auto revive ability",
+            key = "AutoRevive",
             values = {
                 {
                     text = "<LOC _Off>Off",

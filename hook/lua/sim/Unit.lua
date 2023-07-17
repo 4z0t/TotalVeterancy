@@ -141,7 +141,7 @@ end
 local AutoRevive = function(self, instigator, type, overkillRatio)
     local brain = GetArmyBrain(self:GetArmy())
 
-    if not (self.Revive > 0 and not brain:IsDefeated()) then
+    if not (self.Revive > 0 and not brain:IsDefeated() and ScenarioInfo.Options.AutoRevive == "true") then
         return
     end
 
