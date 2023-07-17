@@ -49,11 +49,3 @@ Tooltips.bBBase = {
 Tooltips.ToggleBalance = {
     title = 'Toggle SP/MP Balance',
     description = "Affects over time XP gains, Teleport time reductions, Shield behaviour.", }
-Tooltips.jump_in_jack = {
-    title = 'Jump',
-    description = [[Select a Target to jump to after pressing this button. modifiers: (clicking this button) Right Mouse Button: Formation Jump Middle Mouse Button: Long-range Jump(~2-14x cost) Shift: a shallow Jump(.5x) Alt: Dance of Death (each 1K target hp cost 300 mass) Ctrl: Bulletstorm(7x) ]], }
-Tooltips.Jump2 = {
-    title = 'Jump',
-    description = [[Select a Target to jump to after pressing this button. modifiers: (clicking this button) Right Mouse Button: Formation Jump Middle Mouse Button: Long-range Jump(~2-14 cost) Shift: a shallow Jump(.5x) Ctrl: BulletStorm (7x) Alt: Dance of Death (each 1K target hp cost 300 mass) Details: Range octagons are estimated and do
- not take target elevation into account. Jumping from/to high positions requires you to be closer. Please read jump costs included with this mod
-for detailed costs breakdowns. AreaDamage is affected by jump length and height. Orders can not be queued before jumping. ]], }

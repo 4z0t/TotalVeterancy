@@ -62,25 +62,6 @@ do
                 '5.6', '5.7', '5.8', '5.9', '6.0'
             },
         })
-    table.insert(AIOpts,
-        {
-            default = 2,
-            label = "Jump abilities",
-            help = "Enable Jump abilities of ACU and SACU",
-            key = "IsJumpEnabled",
-            values = {
-                {
-                    text = "<LOC _Off>Off",
-                    help = "Disabled",
-                    key = 'false',
-                },
-                {
-                    text = "<LOC _On>On",
-                    help = "Enabled",
-                    key = 'true',
-                },
-            },
-        })
     for _, vetBuff in VetBuffs do
         table.insert(AIOpts,
             {
