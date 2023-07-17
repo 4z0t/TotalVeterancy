@@ -139,149 +139,153 @@ local nn = function()
 end
 
 local AutoRevive = function(self, instigator, type, overkillRatio)
-    local bp = self:GetBlueprint()
     local brain = GetArmyBrain(self:GetArmy())
-    if self.Revive > 0 and not brain:IsDefeated() then
-        local unitEnhancements = import('/lua/enhancementcommon.lua').GetEnhancements(self:GetEntityId())
-        local where = self:GetPosition()
-        local revivee = CreateUnitHPR(self:GetUnitId(), self:GetArmy(), where[1], where[2], where[3], 0, 0, 0)
-        revivee:SetCanBeKilled(false)
-        revivee:SetCanTakeDamage(false)
-        revivee:SetFireState(1)
-        if unitEnhancements then
-            for k, v in unitEnhancements do
-                if bp.Enhancements[v].Prerequisite ~= nil then
-                    local recin = {}
-                    local rec = v
-                    local int = 1
-                    while bp.Enhancements[rec].Prerequisite ~= nil do
-                        recin[int] = bp.Enhancements[rec].Prerequisite
-                        int = int + 1
-                        rec = bp.Enhancements[rec].Prerequisite
-                    end
-                    local size = table.getsize(recin) or 1
-                    for i = size, 1, -1 do
-                        revivee:CreateEnhancement(recin[i])
-                    end
-                end
-                revivee:CreateEnhancement(v)
-            end
-        end
-        local lvl = math.floor(self.VeteranLevel) - 10
-        if ScenarioInfo.ALLies == false then
-            local cost = bp.Economy
-            local massx, energyx = (-cost.BuildCostMass * lvl * 0.1), (-cost.BuildCostEnergy * lvl * .1)
-            SetArmyEconomy(revivee:GetArmy(), massx, energyx)
-        end
-        revivee:AddLevels(lvl)
-        revivee:SetHealth(nil, 1)
-        local reviveelvl = revivee.VeteranLevel
-        local br = revivee:GetBuildRate()
-        local brRatio = reviveelvl / br
-        revivee:SetBuildRate(0)
-        revivee.Revive = self.Revive - 1
-        revivee.Sync.Revive = revivee.Revive
-        local id = revivee:GetEntityId()
-        ForkThread(function()
-            local army = revivee:GetArmy()
-            local function cee(X)
-                return CreateEmitterOnEntity(revivee, army, '/effects/emitters/' .. X .. '_emit.bp')
-            end
 
-            local function vfx(VFX, bag)
-                for k, v in VFX do
-                    local f = cee(v)
-                    revivee.Trash:Add(f)
-                    table.insert(bag, f)
-                end
-            end
-
-            local function clfx(bag)
-                for k, v in bag do
-                    v:Destroy()
-                    v = nil
-                end
-            end
-
-            local rbp = revivee:GetBlueprint()
-            revivee.Vetredirector = import('/lua/defaultantiprojectile.lua').Flare {
-                Owner =
-                revivee,
-                Radius = 5,
-                Category = 'PROJECTILE',
-            }
-            revivee.Trash:Add(revivee.Vetredirector)
-            local timer = self.VeteranLevel * 10
-            local redc = ard1
-            revivee.rf = {}
-            local rfx = { 'fire' }
-            vfx(rfx, revivee.rf)
-            if timer > 1490 then
-                redc = ard3
-            end
-            if ScenarioInfo.ALLies == false then
-                redc = prd1
-            end
-            revivee.Vetredirector.OnCollisionCheck = redc
-            if ScenarioInfo.ALLies == false then
-                revivee.Vetredirector:SetCollisionShape('Box', 0, 0, 0, 12, 200, 12)
-            end
-            if timer > 600 then
-                timer = 600
-                if ScenarioInfo.ALLies == false then
-                    timer = 200
-                end
-            end
-            local name = ''
-            if brain.Nickname then
-                name = brain.Nickname
-            end
-            PrintText(name ..
-                "'s Elite " .. LOC(rbp.Description) .. " revived at Level " .. math.floor(revivee.VeteranLevel) .. ' !!'
-                , 20, 'FFFF0000', 10, 'center')
-            PrintText("It'll be Invincible for " .. math.floor(timer * 0.1) .. ' seconds !!', 10, 'FFFF0000', 5, 'center')
-            for i = timer, 1, -1 do
-                if not revivee:IsDead() then
-                    if math.mod(i, 10) == 0 then
-                        FloatingEntityText(id, i * 0.1)
-                    end
-                    revivee:SetFireState(1)
-                    if math.mod(i, 100) == 0 then
-                        vfx(rfx, revivee.rf)
-                    end
-                    WaitTicks(1)
-                end
-            end
-            if not revivee:IsDead() then
-                revivee:SetCanBeKilled(true)
-                revivee:SetCanTakeDamage(true)
-                revivee:SetBuildRate(br)
-                revivee:SetFireState(0)
-                revivee.Vetredirector.OnCollisionCheck = prd1
-                revivee.Vetredirector:SetCollisionShape('Box', 0, 0, 0, 12, 200, 12)
-                local redir2 = 180
-                clfx(revivee.rf)
-                local rfx = { '_test_swirl_01' }
-                vfx(rfx, revivee.rf)
-                if ScenarioInfo.ALLies == false then
-                    redir2 = 2
-                end
-                for i = redir2, 1, -1 do
-                    if not revivee:IsDead() then
-                        FloatingEntityText(id, i)
-                        WaitTicks(10)
-                    end
-                end
-                if not revivee:IsDead() then
-                    clfx(revivee.rf)
-                    revivee.Vetredirector.OnCollisionCheck = nn
-                    revivee.Vetredirector:SetCollisionShape('None')
-                    revivee.Vetredirector:Destroy()
-                    revivee.Vetredirector = nil
-                end
-            end
-        end)
+    if not (self.Revive > 0 and not brain:IsDefeated()) then
+        return
     end
+
+    local bp = self:GetBlueprint()
+    local unitEnhancements = import('/lua/enhancementcommon.lua').GetEnhancements(self:GetEntityId())
+    local where = self:GetPosition()
+    local revivee = CreateUnitHPR(self:GetUnitId(), self:GetArmy(), where[1], where[2], where[3], 0, 0, 0)
+    revivee:SetCanBeKilled(false)
+    revivee:SetCanTakeDamage(false)
+    revivee:SetFireState(1)
+    if unitEnhancements then
+        for k, v in unitEnhancements do
+            if bp.Enhancements[v].Prerequisite ~= nil then
+                local recin = {}
+                local rec = v
+                local int = 1
+                while bp.Enhancements[rec].Prerequisite ~= nil do
+                    recin[int] = bp.Enhancements[rec].Prerequisite
+                    int = int + 1
+                    rec = bp.Enhancements[rec].Prerequisite
+                end
+                local size = table.getsize(recin) or 1
+                for i = size, 1, -1 do
+                    revivee:CreateEnhancement(recin[i])
+                end
+            end
+            revivee:CreateEnhancement(v)
+        end
+    end
+    local lvl = math.floor(self.VeteranLevel) - 10
+    if ScenarioInfo.ALLies == false then
+        local cost = bp.Economy
+        local massx, energyx = (-cost.BuildCostMass * lvl * 0.1), (-cost.BuildCostEnergy * lvl * .1)
+        SetArmyEconomy(revivee:GetArmy(), massx, energyx)
+    end
+    revivee:AddLevels(lvl)
+    revivee:SetHealth(nil, 1)
+    local reviveelvl = revivee.VeteranLevel
+    local br = revivee:GetBuildRate()
+    local brRatio = reviveelvl / br
+    revivee:SetBuildRate(0)
+    revivee.Revive = self.Revive - 1
+    revivee.Sync.Revive = revivee.Revive
+    local id = revivee:GetEntityId()
+    ForkThread(function()
+        local army = revivee:GetArmy()
+        local function cee(X)
+            return CreateEmitterOnEntity(revivee, army, '/effects/emitters/' .. X .. '_emit.bp')
+        end
+
+        local function vfx(VFX, bag)
+            for k, v in VFX do
+                local f = cee(v)
+                revivee.Trash:Add(f)
+                table.insert(bag, f)
+            end
+        end
+
+        local function clfx(bag)
+            for k, v in bag do
+                v:Destroy()
+                v = nil
+            end
+        end
+
+        local rbp = revivee:GetBlueprint()
+        revivee.Vetredirector = import('/lua/defaultantiprojectile.lua').Flare {
+            Owner =
+            revivee,
+            Radius = 5,
+            Category = 'PROJECTILE',
+        }
+        revivee.Trash:Add(revivee.Vetredirector)
+        local timer = self.VeteranLevel * 10
+        local redc = ard1
+        revivee.rf = {}
+        local rfx = { 'fire' }
+        vfx(rfx, revivee.rf)
+        if timer > 1490 then
+            redc = ard3
+        end
+        if ScenarioInfo.ALLies == false then
+            redc = prd1
+        end
+        revivee.Vetredirector.OnCollisionCheck = redc
+        if ScenarioInfo.ALLies == false then
+            revivee.Vetredirector:SetCollisionShape('Box', 0, 0, 0, 12, 200, 12)
+        end
+        if timer > 600 then
+            timer = 600
+            if ScenarioInfo.ALLies == false then
+                timer = 200
+            end
+        end
+        local name = ''
+        if brain.Nickname then
+            name = brain.Nickname
+        end
+        PrintText(name ..
+            "'s Elite " .. LOC(rbp.Description) .. " revived at Level " .. math.floor(revivee.VeteranLevel) .. ' !!'
+            , 20, 'FFFF0000', 10, 'center')
+        PrintText("It'll be Invincible for " .. math.floor(timer * 0.1) .. ' seconds !!', 10, 'FFFF0000', 5, 'center')
+        for i = timer, 1, -1 do
+            if not revivee:IsDead() then
+                if math.mod(i, 10) == 0 then
+                    FloatingEntityText(id, i * 0.1)
+                end
+                revivee:SetFireState(1)
+                if math.mod(i, 100) == 0 then
+                    vfx(rfx, revivee.rf)
+                end
+                WaitTicks(1)
+            end
+        end
+        if revivee:IsDead() then
+            return
+        end
+        revivee:SetCanBeKilled(true)
+        revivee:SetCanTakeDamage(true)
+        revivee:SetBuildRate(br)
+        revivee:SetFireState(0)
+        revivee.Vetredirector.OnCollisionCheck = prd1
+        revivee.Vetredirector:SetCollisionShape('Box', 0, 0, 0, 12, 200, 12)
+        local redir2 = 180
+        clfx(revivee.rf)
+        local rfx = { '_test_swirl_01' }
+        vfx(rfx, revivee.rf)
+        if ScenarioInfo.ALLies == false then
+            redir2 = 2
+        end
+        for i = redir2, 1, -1 do
+            if not revivee:IsDead() then
+                FloatingEntityText(id, i)
+                WaitTicks(10)
+            end
+        end
+        if not revivee:IsDead() then
+            clfx(revivee.rf)
+            revivee.Vetredirector.OnCollisionCheck = nn
+            revivee.Vetredirector:SetCollisionShape('None')
+            revivee.Vetredirector:Destroy()
+            revivee.Vetredirector = nil
+        end
+    end)
 end
 
 
