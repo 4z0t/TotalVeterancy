@@ -1,6 +1,7 @@
 ---@type ScenarioOption[]
 AIOpts = {}
 do
+    local TableInsert = table.insert
     local VetBuffs = {
         'VeterancyHealthRegen',
         'VeterancyStorageBuff',
@@ -20,7 +21,59 @@ do
         'VeterancySpeed2',
     }
 
-    table.insert(AIOpts,
+    local VetBuffsMultValues = {
+        ['VeterancyHealthRegen'] = {
+            MaxHealth = { 10, 100, 10 },
+            Regen = { 10, 100, 10 },
+        },
+        ['VeterancyDamageRoF'] = {
+            Damage = { 10, 100, 10 },
+            RateOfFireBuf = { 1, 10, 1 },
+        },
+        ['VeterancyDamageArea'] = {
+            DamageRadius = { 5, 100, 5 },
+        },
+        ['VeterancyRange'] = {
+            MaxRadius = { 10, 100, 10 },
+        },
+        ['VeterancySpeed'] = {
+            MoveMult = { 1, 10, 1 },
+        },
+        ['VeterancyFuel'] = {
+            Fuel = { 5, 100, 5 },
+        },
+        ['VeterancyShield'] = {
+            ShieldHP = { 10, 100, 10 },
+            ShieldRegen = { 10, 100, 10 },
+        },
+        ['VeterancyVision'] = {
+            VisionRadius = { 2.5, 100, 2.5 },
+        },
+        ['VeterancyOmniRadius'] = {
+            OmniRadius = { 2.5, 100, 2.5 },
+        },
+        ['VeterancyRadar'] = {
+            RadarRadius = { 2.5, 100, 2.5 },
+        },
+        ['VeterancySonar'] = {
+            SonarRadius = { 2.5, 100, 2.5 },
+        },
+        ['VeterancyBuildRate'] = {
+            BuildRate = { 10, 100, 10 },
+        },
+        ['VeterancyResourceProduction'] = {
+            EnergyProductionBuf = { 20, 100, 20 },
+            MassProductionBuf = { 10, 100, 10 },
+        },
+        ['VeterancySpeed2'] = {
+            MoveMult = { 1, 10, 1 },
+        },
+        ['VeterancyStorageBuff'] = {
+            EnergyStorageBuf = { 40, 200, 40 },
+            MassStorageBuf = { 40, 200, 40 },
+        },
+    }
+    TableInsert(AIOpts,
         {
             default = 2,
             label = "=====Total Veterancy=====",
@@ -39,7 +92,7 @@ do
                 },
             },
         })
-    table.insert(AIOpts,
+    TableInsert(AIOpts,
         {
             default = 10,
             label = "XP gain multiplier",
@@ -62,11 +115,19 @@ do
                 '5.6', '5.7', '5.8', '5.9', '6.0'
             },
         })
+    local function BuffMultOptionValue(startValue, endValue, stepValue)
+        local values = {}
+        for i = startValue, endValue, stepValue do
+            TableInsert(values, i)
+        end
+        return values
+    end
+
     for _, vetBuff in VetBuffs do
-        table.insert(AIOpts,
+        TableInsert(AIOpts,
             {
                 default = 2,
-                label = vetBuff .. " buff",
+                label = vetBuff,
                 help = "Enable " .. vetBuff .. " buff",
                 key = vetBuff,
                 values = {
@@ -82,5 +143,19 @@ do
                     },
                 },
             })
+        if VetBuffsMultValues[vetBuff] then
+            for affect, values in VetBuffsMultValues[vetBuff] do
+                TableInsert(AIOpts,
+                    {
+                        default = 1,
+                        label = vetBuff .. " " .. affect,
+                        help = "Sets " .. vetBuff .. " " .. affect .. " mult percentage",
+                        key = vetBuff .. affect,
+                        value_text = "%.2f%%",
+                        value_help = "Buff multiplier percentage",
+                        values = BuffMultOptionValue(unpack(values))
+                    })
+            end
+        end
     end
 end

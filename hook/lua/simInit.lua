@@ -41,7 +41,11 @@ function SetupSession()
     _SetupSession()
     do
         local function IsEnabled(name)
-            return ScenarioInfo.Options[name] == "true"
+            return ScenarioInfo.Options[name] ~= "false"
+        end
+
+        local function _GetBuffMult(buff, name)
+            return (ScenarioInfo.Options[buff .. name] or 0) / 100
         end
 
         local VetBuffs = {
@@ -68,6 +72,12 @@ function SetupSession()
                 LOG("Veterancy buff " .. buff .. " Disabled")
             else
                 LOG("Veterancy buff " .. buff .. " Enabled")
+                for name, affect in pairs(Buffs[buff].Affects) do
+                    if affect.Mult then
+                        affect.Mult = 1 + _GetBuffMult(buff, name)
+                        LOG(('Buff %s:%s = %f'):format(buff, name, affect.Mult))
+                    end
+                end
             end
         end
     end
