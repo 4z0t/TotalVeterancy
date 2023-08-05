@@ -21,7 +21,7 @@ local function CheckAlliances()
             humans[i] = v
         end
     end
-    if table.getn(humans) > 0 then
+    if not table.empty(humans) then
         local maxhumans = table.getn(humans)
         for hum = 1, maxhumans do
             for ans = 1, maxhumans do
