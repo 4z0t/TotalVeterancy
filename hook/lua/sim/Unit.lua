@@ -435,10 +435,7 @@ Unit = Class(oldUnit) {
                     return
                 end
                 if self.LevelProgress > 26 then
-                    mult = -0.2 * (self.VeteranLevel)
-                    if mult < -24 then
-                        mult = -24
-                    end
+                    mult = math.max(-0.2 * self.VeteranLevel, -24)
                 end
             end
             enhxp = enhxp * (100 + (4 * (mult))) * .01
@@ -568,16 +565,16 @@ Unit = Class(oldUnit) {
         veteranLevel = veteranLevel or 0
         if veteranLevel <= 5 then
             return oldUnit.SetVeterancy(self, veteranLevel)
+        end
+
+        local bp = self:GetBlueprint()
+        if bp.Veteran['Level' .. veteranLevel] then
+            self:AddKills(bp.Veteran['Level' .. veteranLevel])
         else
-            local bp = self:GetBlueprint()
-            if bp.Veteran['Level' .. veteranLevel] then
-                self:AddKills(bp.Veteran['Level' .. veteranLevel])
-            else
-                WARN('SetVeterancy called on ' ..
-                    self:GetUnitId() ..
-                    ' with veteran level ' ..
-                    veteranLevel .. ' which was not defined in its BP file. ' .. ' Veterancy level has not been set.')
-            end
+            WARN('SetVeterancy called on ' ..
+                self:GetUnitId() ..
+                ' with veteran level ' ..
+                veteranLevel .. ' which was not defined in its BP file. ' .. ' Veterancy level has not been set.')
         end
     end,
 
@@ -732,14 +729,12 @@ Unit = Class(oldUnit) {
                 if brain.StorageMassTotal then
                     brain:GiveStorage("MASS", brain.StorageMassTotal)
                 end
-            else
-                if brain.ME == "Energy" then
-                    if brain.StorageEnergyTotal then
-                        brain:GiveStorage("ENERGY", brain.StorageEnergyTotal)
-                    end
-                else
-                    brain.ME = "Mass"
+            elseif brain.ME == "Energy" then
+                if brain.StorageEnergyTotal then
+                    brain:GiveStorage("ENERGY", brain.StorageEnergyTotal)
                 end
+            else
+                brain.ME = "Mass"
             end
             self:GetAIBrain():OnBrainUnitVeterancyLevel(self, level)
             self:DoUnitCallbacks('OnVeteran')
@@ -833,7 +828,7 @@ Unit = Class(oldUnit) {
         oldUnit.CreatePersonalShield(self, shieldSpec)
         Buff.BuffAffectUnit(self, 'VeterancyShield', self, true)
     end,
-    
+
     ---@param self Unit
     ---@param teleporter any
     ---@param location any
@@ -871,45 +866,20 @@ Unit = Class(oldUnit) {
 
         if not ScenarioInfo.Allies then
             if EntityCategoryContains(categories.COMMAND, self) then
-                if (time - self.VeteranLevel * 0.2) > 6 then
-                    time = time - (self.VeteranLevel * 0.2)
-                else
-                    time = 6
-                end
+                time = math.max(time - self.VeteranLevel * 0.2, 6)
             elseif EntityCategoryContains(categories.SUBCOMMANDER, self) then
-                if (time - self.VeteranLevel * 0.4) > 10 then
-                    time = time - (self.VeteranLevel * 0.4)
-                else
-                    time = 10
-                end
+                time = math.max(time - self.VeteranLevel * 0.4, 10)
             else
-                if (time - self.VeteranLevel) > 15 then
-                    time = time - (self.VeteranLevel)
-                else
-                    time = 15
-                end
+                time = math.max(time - self.VeteranLevel, 15)
             end
         else
             if EntityCategoryContains(categories.COMMAND, self) then
-                if (time - self.VeteranLevel * 0.5) > 0 then
-                    time = time - (self.VeteranLevel * 0.5)
-                else
-                    time = 0.1
-                end
+                time = math.max(time - self.VeteranLevel * 0.5, 0.1)
             elseif EntityCategoryContains(categories.SUBCOMMANDER, self) then
-                if (time - self.VeteranLevel) > 0.2 then
-                    time = time - (self.VeteranLevel)
-                else
-                    time = 0.2
-                end
+                time = math.max(time - self.VeteranLevel, 0.2)
             else
-                if (time - self.VeteranLevel) > 1 then
-                    time = time - (self.VeteranLevel)
-                else
-                    time = 1
-                end
+                time = math.max(time - self.VeteranLevel, 1)
             end
-
         end
 
 
