@@ -5,6 +5,18 @@ VeteranDefault = {
     Level4 = 500,
     Level5 = 1000,
 }
+
+function GameState()
+    local result
+    local uiStateFunc = rawget(_G, 'GetCurrentUIState')
+    if uiStateFunc then
+        result = uiStateFunc()
+    else
+        result = 'sim'
+    end
+    return result
+end
+
 function GetConstructEconomyModel(builder, targetData)
     local builder_bp = builder:GetBlueprint()
     local rate = builder:GetBuildRate()
@@ -51,15 +63,4 @@ function GetConstructEconomyModel(builder, targetData)
         mass = 0
     end
     return time / rate, energy, mass
-end
-
-function GameState()
-    local result
-    local uiStateFunc = rawget(_G, 'GetCurrentUIState')
-    if uiStateFunc then
-        result = uiStateFunc()
-    else
-        result = 'sim'
-    end
-    return result
 end
