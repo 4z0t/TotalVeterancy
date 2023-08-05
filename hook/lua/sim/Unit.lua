@@ -362,13 +362,11 @@ Unit = Class(oldUnit) {
             self.Sync.LevelProgress = self.LevelProgress
             self.Sync.RegenRate = bp.Defense.RegenRate
             if EntityCategoryContains(categories.COMMAND, self) then
-                self.eco = ForkThread(function()
+                local ecoThread = ForkThread(function()
                     WaitSeconds(1.8)
                     SetArmyEconomy(self:GetArmy(), 0, 5000)
-                    self.eco:Destroy()
-                    self.eco = nil
                 end)
-                self.Trash:Add(self.eco)
+                self.Trash:Add(ecoThread)
             end
             if ScenarioInfo.AItoggle and self.BuildXPLevelpSecond and brain.BrainType ~= "Human" then
                 self.vetToggle = 4
@@ -429,11 +427,9 @@ Unit = Class(oldUnit) {
             local mult = self.LevelProgress - 0.9999
             if ScenarioInfo.ALLies == false then
                 mult = 0
-                if self.enhcnt then
-                    self.enhcnt = self.enhcnt + 1
-                else
-                    self.enhcnt = 1
-                end
+
+                self.enhcnt = (self.enhcnt or 0) + 1
+
                 if self.enhcnt > 25 then
                     oldUnit.WorkingState.OnWorkEnd(self, work)
                     return
@@ -465,12 +461,16 @@ Unit = Class(oldUnit) {
         if self:GetBlueprint().Economy.xpTimeStep <= 0 then
             return
         end
+
         local waittime = self:GetBlueprint().Economy.xpTimeStep * 0.5
         local step = 0.75
+
         if ScenarioInfo.ALLies == false then
             step = 0.34
         end
+
         WaitSeconds(waittime)
+
         while not self:IsDead() and (self.MaintenanceConsumption or
             EntityCategoryContains(categories.ENERGYPRODUCTION + categories.MASSSTORAGE + categories.ENERGYSTORAGE,
                 self)) do
@@ -486,24 +486,31 @@ Unit = Class(oldUnit) {
         if levelPerSecond <= 0 then
             return
         end
+
         WaitTicks(2)
+
         if not self:IsDead() and self.ActiveConsumption then
             self:AddXP(self.XPnextLevel * levelPerSecond * 0.017)
         else
             return
         end
+
         WaitTicks(10)
+
         if not self:IsDead() and self.ActiveConsumption then
             self:AddXP(self.XPnextLevel * levelPerSecond * 0.017)
         else
             return
         end
+
         WaitTicks(10)
+
         while not self:IsDead() and self.ActiveConsumption do
             self:AddXP(self.XPnextLevel * levelPerSecond * 0.05)
             WaitTicks(30)
         end
     end,
+
     SetActiveConsumptionActive = function(self)
         if ScenarioInfo.ALLies ~= false then
             if self.BuildXPThread then
@@ -514,6 +521,7 @@ Unit = Class(oldUnit) {
         end
         oldUnit.SetActiveConsumptionActive(self)
     end,
+
     StartSiloXPThread = function(self)
         local levelPerSecond = self:GetBlueprint().Economy.BuildXPLevelpSecond
         if not levelPerSecond then
@@ -546,6 +554,7 @@ Unit = Class(oldUnit) {
             WaitTicks(60)
         end
     end,
+
     OnSiloBuildStart = function(self, weapon)
         if self.SiloXPThread then
             KillThread(self.SiloXPThread)
@@ -554,6 +563,7 @@ Unit = Class(oldUnit) {
         self.Trash:Add(self.SiloXPThread)
         oldUnit.OnSiloBuildStart(self, weapon)
     end,
+
     SetVeterancy = function(self, veteranLevel)
         veteranLevel = veteranLevel or 0
         if veteranLevel <= 5 then
@@ -597,6 +607,7 @@ Unit = Class(oldUnit) {
         CreateAttachedEmitter(self, 0, self.Army, '/effects/emitters/destruction_explosion_concussion_ring_01_emit.bp')
             :ScaleEmitter(time)
     end,
+
     SetVeteranLevel = function(self, level)
         local bapb = Buff.ApplyBuff
         local mod = math.mod
@@ -734,6 +745,7 @@ Unit = Class(oldUnit) {
             self:DoUnitCallbacks('OnVeteran')
         end
     end,
+
     CreateUnitBuff = function(self, levelName, buffType, buffValues)
         local buffName = self:GetUnitId() .. levelName .. buffType
         local buffMinLevel = nil
@@ -758,6 +770,7 @@ Unit = Class(oldUnit) {
         end
         return buffName
     end,
+
     UpdateProductionValues = function(self)
         local bpEcon = self:GetBlueprint().Economy
         if not bpEcon then
@@ -768,6 +781,7 @@ Unit = Class(oldUnit) {
         self:SetProductionPerSecondMass((self.MassProdMod or bpEcon.ProductionPerSecondMass or 0) *
             (self.MassProdAdjMod or 1))
     end,
+
     AddLevels = function(self, levels)
         if levels <= 0 then
             return
@@ -791,6 +805,7 @@ Unit = Class(oldUnit) {
         xpAdd = xpAdd + bp.Economy.XPperLevel * (1 + 0.1 * (curlevel + 1)) * levels
         self:AddXP(xpAdd)
     end,
+
     AddXP = function(self, amount)
         if not self.XPnextLevel then
             return
@@ -801,21 +816,24 @@ Unit = Class(oldUnit) {
         self.xp = self.xp + amount * XPGAINMult
         self:CheckVeteranLevel()
     end,
+
     OnKilled = function(self, instigator, type, overkillRatio)
         StorageBuffs(self, instigator, type, overkillRatio)
         AutoRevive(self, instigator, type, overkillRatio)
         XPaward(self, instigator, type, overkillRatio)
         oldUnit.OnKilled(self, instigator, type, overkillRatio)
     end,
+
     CreateShield = function(self, shieldSpec)
         oldUnit.CreateShield(self, shieldSpec)
         Buff.BuffAffectUnit(self, 'VeterancyShield', self, true)
     end,
+
     CreatePersonalShield = function(self, shieldSpec)
         oldUnit.CreatePersonalShield(self, shieldSpec)
         Buff.BuffAffectUnit(self, 'VeterancyShield', self, true)
     end,
-    ---comment
+    
     ---@param self Unit
     ---@param teleporter any
     ---@param location any
