@@ -297,11 +297,11 @@ local StorageBuffs = function(self, instigator, type, overkillRatio)
     local brain = GetArmyBrain(self:GetArmy())
     if bp.Economy.StorageEnergy and self.VeteranLevel > 1 then
         brain.StorageEnergyTotal = brain.StorageEnergyTotal -
-            (bp.Economy.StorageEnergy * estbuff) * (self.VeteranLevel - 1)
+            bp.Economy.StorageEnergy * estbuff * (self.VeteranLevel - 1)
         brain:GiveStorage("ENERGY", brain.StorageEnergyTotal)
     end
     if bp.Economy.StorageMass and self.VeteranLevel > 1 then
-        brain.StorageMassTotal = brain.StorageMassTotal - (bp.Economy.StorageMass * estbuff) * (self.VeteranLevel - 1)
+        brain.StorageMassTotal = brain.StorageMassTotal - bp.Economy.StorageMass * estbuff * (self.VeteranLevel - 1)
         brain:GiveStorage("MASS", brain.StorageMassTotal)
     end
 end
@@ -816,6 +816,10 @@ Unit = Class(oldUnit) {
         self:CheckVeteranLevel()
     end,
 
+    ---@param self Unit
+    ---@param instigator Unit
+    ---@param type any
+    ---@param overkillRatio any
     OnKilled = function(self, instigator, type, overkillRatio)
         StorageBuffs(self, instigator, type, overkillRatio)
         AutoRevive(self, instigator, type, overkillRatio)
