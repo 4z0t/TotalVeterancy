@@ -806,6 +806,10 @@ Unit = Class(oldUnit) {
     end,
 
     AddXP = function(self, amount)
+        self:AddVetExperience(amount)
+    end,
+
+    AddVetExperience = function(self, amount)
         if not self.XPnextLevel then
             return
         end
