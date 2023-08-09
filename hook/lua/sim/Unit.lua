@@ -313,7 +313,6 @@ local GetEnemies = function(self, instigator)
     local selA = self:GetArmy()
     for k, y in units do
         if IsAlly(selA, y:GetArmy()) then
-            --TODO: FIX continue
             continue
         end
         table.insert(eAm, y)
@@ -324,22 +323,27 @@ end
 local XPaward = function(self, instigator, type, overkillRatio)
     local bp = self:GetBlueprint()
     local brain = GetArmyBrain(self:GetArmy())
-    if instigator and IsUnit(instigator) and not instigator:IsDead() and not IsAlly(self:GetArmy(), instigator:GetArmy()) then
-        if bp.Economy.xpValue then
-            local xpR = bp.Economy.xpValue * self.VeteranLevel * 0.25
-            if s.ShareEXP then
-                local en = GetEnemies(self, instigator)
-                local nr = table.getn(en)
-                if nr > 0 then
-                    local rew = xpR * .9 / nr
-                    xpR = xpR * .1
-                    for k, v in en do
-                        v:AddXP(rew)
-                    end
+    if not
+        (
+        instigator and IsUnit(instigator) and not instigator:IsDead() and
+            not IsAlly(self:GetArmy(), instigator:GetArmy())) then
+        return
+    end
+
+    if bp.Economy.xpValue then
+        local xpR = bp.Economy.xpValue * self.VeteranLevel * 0.25
+        if s.ShareEXP then
+            local en = GetEnemies(self, instigator)
+            local nr = table.getn(en)
+            if nr > 0 then
+                local rew = xpR * .9 / nr
+                xpR = xpR * .1
+                for k, v in en do
+                    v:AddXP(rew)
                 end
             end
-            instigator:AddXP(xpR)
         end
+        instigator:AddXP(xpR)
     end
 end
 
