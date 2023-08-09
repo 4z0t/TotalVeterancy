@@ -432,10 +432,10 @@ function ApplyBuff(unit, buffName, instigator)
         end
     end
     local ubt = unit.Buffs.BuffTable
-    if def.MinLevel and def.MinLevel >= unit.VeteranLevel then
+    if def.MinLevel and def.MinLevel >= unit.VetLevel then
         return
     end
-    if def.MaxLevel and def.MaxLevel + 1 < unit.VeteranLevel then
+    if def.MaxLevel and def.MaxLevel + 1 < unit.VetLevel then
         return
     end
     if def.Stacks == 'REPLACE' and ubt[def.BuffType] then

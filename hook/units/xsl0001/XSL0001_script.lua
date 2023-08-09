@@ -173,7 +173,7 @@ XSL0001 = Class(oldXSL0001) {
 
         local radiusMult = Buffs.VeterancyDamageArea.Affects.DamageRadius.Mult - 1
         local radiusMaxLevel = Buffs.VeterancyDamageArea.MaxLevel
-        local radius = bp.Radius + (radiusMult * math.min(radiusMaxLevel, self.VeteranLevel - 1) * bp.Radius)
+        local radius = bp.Radius + (radiusMult * math.min(radiusMaxLevel, self.VetLevel - 1) * bp.Radius)
 
         local all = brain:GetUnitsAroundPoint(unitCat, self:GetPosition(), radius, 'Ally')
         local units = {}
