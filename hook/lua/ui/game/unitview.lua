@@ -1,3 +1,9 @@
+---@param unit UserUnit
+---@return number
+---@return number
+---@return number
+---@return number
+---@return number
 local function CalcVetStats(unit)
     local bp = unit:GetBlueprint()
     local vetLevel = unit:GetStat('VetLevel', 0).Value
@@ -5,7 +11,7 @@ local function CalcVetStats(unit)
     local XPnextLevel = unit:GetStat('XPnextLevel', 0).Value
     local levelProgress = unit:GetStat('LevelProgress', 0).Value
     local percent = vetExperience / XPnextLevel
-    local worth = vetLevel * bp.Economy.xpValue * 0.25
+    local worth = bp.Economy.xpValue * (math.log10(vetLevel) + 1)
     if worth > 1000000 then
         worth = 0
     end

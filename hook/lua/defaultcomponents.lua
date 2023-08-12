@@ -62,19 +62,29 @@ VeterancyComponent = Class(_VeterancyComponent)
         if not bp.Economy.xpValue then
             return
         end
-        local vetWorth = self:GetFractionComplete() * self:GetTotalMassCost()
+
         local vetDamage = self.VetDamage
         local vetInstigators = self.VetInstigators
         local vetDamageTaken = self.VetDamageTaken
 
-        local xp = bp.Economy.xpValue * self.VetLevel * 0.25 * self:GetFractionComplete()
+        local xp = self:GetVetWorth()
 
         for id, unit in vetInstigators do
             if not IsDestroyed(unit) then
-                local proportion = xp * (vetDamage[id] / vetDamageTaken)
+                local proportion = xp * vetDamage[id] / vetDamageTaken
                 unit:AddVetExperience(proportion)
             end
         end
+    end,
+
+
+    GetVetWorth = function(self)
+        local bp = self.Blueprint
+        if not bp.Economy.xpValue then
+            return 0
+        end
+        local worth = bp.Economy.xpValue * (math.log10(self.LevelProgress) + 1)
+        return worth * self:GetFractionComplete()
     end,
 
     -- Adds experience to a unit
@@ -166,7 +176,7 @@ VeterancyComponent = Class(_VeterancyComponent)
         if not experience then
             return
         end
-
+        LOG("here")
         if not IsDestroyed(unitThatIsDying) then
             local vetWorth = unitThatIsDying:GetFractionComplete() * unitThatIsDying:GetTotalMassCost()
             self:AddVetExperience(experience, false)

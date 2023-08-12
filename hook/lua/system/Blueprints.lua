@@ -34,7 +34,7 @@ function ModBlueprints(all_bps)
     oldModBP(all_bps)
 
     local scaling = 0.5
-    local evenkills = 1
+    local evenkills = 2
     local econScaling = 2
     local ACUbaseValue = 1600
     local SCUbaseValue = 6400
@@ -81,7 +81,8 @@ function ModBlueprints(all_bps)
                 BPUtilities.HasCatergory(bp, 'PROJECTILE')) then
             bp.Economy.xpValue = math.pow((
                 bp.Economy.xpBaseValue or
-                    (bp.Economy.BuildCostMass + bp.Economy.BuildCostEnergy * 0.1 + bp.Economy.BuildTime * 0.04)), scaling)
+                    (bp.Economy.BuildCostMass * 0.8 + bp.Economy.BuildCostEnergy * 0.2 + bp.Economy.BuildTime * 0.07)),
+                scaling)
         end
         if bp.Economy and not bp.Economy.XPperLevel and bp.Economy.xpValue then
             bp.Economy.XPperLevel = bp.Economy.xpValue * evenkills
