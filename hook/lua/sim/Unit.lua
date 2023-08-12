@@ -305,24 +305,9 @@ local StorageBuffs = function(self, instigator, type, overkillRatio)
         brain:GiveStorage("MASS", brain.StorageMassTotal)
     end
 end
-local GetEnemies = function(self, instigator)
-    local eAm = {}
-    local ps = self:GetPosition()
-    local rn = (VDist3(ps, instigator:GetPosition())) * 1.4
-    local units = GetUnitsInRect(ps[1] - rn, ps[3] - rn, ps[1] + rn, ps[3] + rn)
-    local selA = self:GetArmy()
-    for k, y in units do
-        if IsAlly(selA, y:GetArmy()) then
-            continue
-        end
-        table.insert(eAm, y)
-    end
-    return eAm
-end
 
 local Buff = import('/lua/sim/buff.lua')
 local ScenarioInfo = ScenarioInfo
-local XPGAINMult = tonumber(ScenarioInfo.Options.XPGainMult or '1.0') or 1
 
 local oldUnit = Unit
 Unit = Class(oldUnit) {
