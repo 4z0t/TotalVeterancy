@@ -24,7 +24,7 @@ function _CreateScalableUnitExplosion(obj)
             BaseEffectTable = EffectTemplate.ExplosionEffectsMed01
         end
         EnvironmentalEffectTable = GetUnitEnvironmentalExplosionEffects(layer, scale)
-        if table.getn(EnvironmentalEffectTable) ~= 0 then
+        if not table.empty(EnvironmentalEffectTable) then
             EffectTable = EffectTemplate.TableCat(BaseEffectTable, EnvironmentalEffectTable)
         else
             EffectTable = BaseEffectTable
